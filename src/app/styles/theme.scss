@@ -1,0 +1,106 @@
+:root,
+[data-theme='light'] {
+  // Backgrounds
+  --background: #f5f5f5;
+  --background-subtle: var(--color-white);
+  --background-muted: var(--color-neutral-200);
+
+  // Foregrounds
+  --foreground: var(--color-neutral-950);
+  --foreground-muted: var(--color-neutral-500);
+  --foreground-subtle: var(--color-neutral-400);
+
+  // Surface (cards, panels)
+  --card: var(--color-white);
+  --card-foreground: var(--color-neutral-950);
+
+  // Popover / Dropdown
+  --popover: var(--color-white);
+  --popover-foreground: var(--color-neutral-950);
+
+  // Primary action
+  --primary: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+  --primary-foreground: var(--color-white);
+
+  // Secondary action
+  --secondary: var(--color-secondary);
+  --secondary-hover: var(--color-secondary-hover);
+
+  // Muted
+  --muted: var(--color-neutral-100);
+  --muted-foreground: var(--color-neutral-500);
+
+  // Accent
+  --accent: var(--color-primary);
+  --accent-foreground: var(--color-primary-hover);
+
+  // Destructive
+  --destructive: var(--color-red-600);
+  --destructive-foreground: var(--color-white);
+
+  // Borders & Inputs
+  --border: var(--color-neutral-200);
+  --input: var(--color-neutral-200);
+  --input-focus: var(--color-primary);
+  --ring: var(--color-primary);
+
+  // Shared
+  --radius: var(--radius-md);
+
+  // Color scheme hint for browser UI
+  color-scheme: light;
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+  // Backgrounds
+  --background: #0f0f0f;
+  --background-subtle: var(--color-neutral-900);
+  --background-muted: var(--color-neutral-800);
+
+  // Foregrounds
+  --foreground: var(--color-white);
+  --foreground-muted: var(--color-neutral-400);
+  --foreground-subtle: var(--color-neutral-600);
+
+  // Surface (cards, panels)
+  --card: var(--color-neutral-900);
+  --card-foreground: var(--color-white);
+
+  // Popover / Dropdown
+  --popover: var(--color-neutral-900);
+  --popover-foreground: var(--color-white);
+
+  // Primary action
+  --primary: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+
+  // Secondary action
+  --secondary: var(--color-secondary);
+  --secondary-hover: var(--color-secondary-hover);
+
+  // Muted
+  --muted: var(--color-neutral-800);
+  --muted-foreground: var(--color-neutral-400);
+
+  // Accent
+  --accent: var(--color-neutral-800);
+  --accent-foreground: var(--color-primary);
+
+  // Destructive
+  --destructive: var(--color-red-700);
+  --destructive-foreground: var(--color-white);
+
+  // Borders & Inputs
+  --border: color-mix(in oklab, var(--color-white) 10%, transparent);
+  --input: var(--color-neutral-800);
+  --input-focus: var(--color-primary);
+  --ring: var(--color-primary);
+
+  // Shared
+  --radius: var(--radius-md);
+
+  // Color scheme hint for browser UI
+  color-scheme: dark;
+}
