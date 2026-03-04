@@ -1,0 +1,74 @@
+:host {
+  display: inline-flex;
+  width: 100%;
+
+  .input {
+    width: 100%;
+    font-family: inherit;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background-color: var(--background-subtle);
+    color: var(--foreground);
+    outline: none;
+
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+
+    &::placeholder {
+      color: var(--foreground-subtle);
+    }
+
+    &:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Sizes ──────────────────────────────────────────
+  &.size-sm .input {
+    padding: 0.375rem 0.625rem;
+    font-size: var(--font-size-sm);
+  }
+
+  &.size-md .input {
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-size-base);
+  }
+
+  &.size-lg .input {
+    padding: 0.75rem 1rem;
+    font-size: var(--font-size-lg);
+  }
+
+  // ── Variants ───────────────────────────────────────
+  &.variant-filled .input {
+    background-color: var(--muted);
+    border-color: transparent;
+
+    &:focus {
+      background-color: var(--background-subtle);
+      border-color: var(--input-focus);
+    }
+  }
+
+  &.variant-ghost .input {
+    background-color: transparent;
+    border-color: transparent;
+
+    &:focus {
+      border-color: var(--input-focus);
+    }
+  }
+
+  // ── Disabled state ─────────────────────────────────
+  &.is-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}

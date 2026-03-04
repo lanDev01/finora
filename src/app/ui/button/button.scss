@@ -1,0 +1,125 @@
+:host {
+  display: inline-flex;
+
+  &.full-width {
+    width: 100%;
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+
+    font-family: inherit;
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    outline: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--transition-base),
+      color var(--transition-base),
+      border-color var(--transition-base),
+      box-shadow var(--transition-base),
+      opacity var(--transition-base);
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 30%, transparent);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Sizes ──────────────────────────────────────────
+  &.size-sm .button {
+    padding: 0.375rem 0.75rem;
+    font-size: var(--font-size-sm);
+  }
+
+  &.size-md .button {
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-base);
+  }
+
+  &.size-lg .button {
+    padding: 0.75rem 1.5rem;
+    font-size: var(--font-size-lg);
+  }
+
+  // ── Variants ───────────────────────────────────────
+  &.variant-primary .button {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+  }
+
+  &.variant-secondary .button {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.95);
+    }
+  }
+
+  &.variant-ghost .button {
+    background-color: transparent;
+    color: var(--foreground);
+
+    &:hover:not(:disabled) {
+      background-color: var(--muted);
+    }
+  }
+
+  &.variant-outline .button {
+    background-color: transparent;
+    color: var(--foreground);
+    border-color: var(--border);
+
+    &:hover:not(:disabled) {
+      background-color: var(--muted);
+    }
+  }
+
+  &.variant-destructive .button {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.9);
+    }
+  }
+
+  // ── Loading spinner ────────────────────────────────
+  .spinner {
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: spin 600ms linear infinite;
+    flex-shrink: 0;
+  }
+
+  &.is-loading .button {
+    cursor: wait;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
