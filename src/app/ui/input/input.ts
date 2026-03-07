@@ -21,6 +21,7 @@ import { INPUT_CONFIG, InputConfig } from './input.token';
     '[class.variant-filled]': 'variant() === "filled"',
     '[class.variant-ghost]': 'variant() === "ghost"',
     '[class.is-disabled]': 'disabled()',
+    '[class.is-error]': 'error()',
   },
 })
 export class Input implements ControlValueAccessor {
@@ -30,6 +31,9 @@ export class Input implements ControlValueAccessor {
   size = input<InputConfig['size']>(this.config.size ?? 'md');
   variant = input<InputConfig['variant']>(this.config.variant ?? 'default');
   disabled = input<boolean>(this.config.disabled ?? false);
+  id = input<string>('');
+  type = input<string>('text');
+  error = input<boolean>(false);
 
   protected value = '';
   protected onChange = (_: any) => {};

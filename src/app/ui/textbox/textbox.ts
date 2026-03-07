@@ -14,38 +14,35 @@ import {
   NgControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
 import { merge } from 'rxjs';
 import { Input } from '../input/input';
 import { INPUT_CONFIG, InputConfig } from '../input/input.token';
 import { Label } from '../label/label';
 
 @Component({
-  selector: 'app-password',
-  imports: [Input, Label, LucideAngularModule, ReactiveFormsModule],
-  templateUrl: './password.html',
-  styleUrl: './password.scss',
+  selector: 'app-textbox',
+  imports: [Input, Label, ReactiveFormsModule],
+  templateUrl: './textbox.html',
+  styleUrl: './textbox.scss',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => Password),
+      useExisting: forwardRef(() => Textbox),
       multi: true,
     },
   ],
 })
-export class Password implements ControlValueAccessor, AfterViewInit {
+export class Textbox implements ControlValueAccessor, AfterViewInit {
   protected config = inject(INPUT_CONFIG);
   private injector = inject(Injector);
 
   label = input<string>('');
   placeholder = input<string>(this.config.placeholder ?? '');
   size = input<InputConfig['size']>(this.config.size ?? 'md');
+  variant = input<InputConfig['variant']>(this.config.variant ?? 'default');
   disabled = input<boolean>(this.config.disabled ?? false);
 
-  protected readonly Eye = Eye;
-  protected readonly EyeOff = EyeOff;
-  protected readonly visible = signal(false);
-  protected readonly id = `password-${Math.random().toString(36).slice(2, 7)}`;
+  protected readonly id = `textbox-${Math.random().toString(36).slice(2, 7)}`;
   protected readonly control = new FormControl('');
   protected hasError = signal(false);
 
@@ -72,10 +69,6 @@ export class Password implements ControlValueAccessor, AfterViewInit {
     ).subscribe(() => {
       this.hasError.set(externalControl.invalid && externalControl.touched);
     });
-  }
-
-  toggleVisibility() {
-    this.visible.set(!this.visible());
   }
 
   writeValue(value: string) {

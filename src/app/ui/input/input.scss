@@ -71,4 +71,13 @@
     pointer-events: none;
     opacity: 0.5;
   }
+
+  &.is-error .input {
+    border-color: var(--destructive);
+
+    &:focus {
+      border-color: var(--destructive);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent);
+    }
+  }
 }

@@ -1,0 +1,14 @@
+<div class="textbox">
+  @if (label()) {
+    <app-label [for]="id" [error]="hasError()">
+      {{ label() }}
+    </app-label>
+  }
+  <app-input
+    [id]="id"
+    [placeholder]="placeholder()"
+    [size]="size()"
+    [variant]="variant()"
+    [formControl]="control"
+  />
+</div>
