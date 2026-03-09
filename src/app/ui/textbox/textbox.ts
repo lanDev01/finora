@@ -1,5 +1,6 @@
+// biome-ignore assist/source/organizeImports: <explanation>
 import {
-  AfterViewInit,
+  type AfterViewInit,
   Component,
   forwardRef,
   inject,
@@ -8,20 +9,20 @@ import {
   signal,
 } from '@angular/core';
 import {
-  ControlValueAccessor,
+  type ControlValueAccessor,
   FormControl,
   NG_VALUE_ACCESSOR,
   NgControl,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Input } from '@ui/input/input';
+import { INPUT_CONFIG, type InputConfig } from '@ui/input/input.token';
+import { Label } from '@ui/label/label';
 import { merge } from 'rxjs';
-import { Input } from '../input/input';
-import { INPUT_CONFIG, InputConfig } from '../input/input.token';
-import { Label } from '../label/label';
 
 @Component({
   selector: 'app-textbox',
-  imports: [Input, Label, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Label, Input],
   templateUrl: './textbox.html',
   styleUrl: './textbox.scss',
   providers: [
