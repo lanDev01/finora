@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 
 export const AUTH_ROUTES: Routes = [
   {
@@ -8,5 +8,10 @@ export const AUTH_ROUTES: Routes = [
   {
     path: 'sign-up',
     loadComponent: () => import('./pages/sign-up/sign-up').then((c) => c.SignUp),
+  },
+  {
+    path: 'social-callback',
+    loadComponent: () =>
+      import('./pages/oauth-callback/oauth-callback').then((c) => c.OAuthCallback),
   },
 ];
