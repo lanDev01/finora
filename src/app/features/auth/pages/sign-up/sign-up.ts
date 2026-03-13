@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
+  type AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
+  type ValidationErrors,
+  type ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';

@@ -7,6 +7,7 @@ import { BUTTON_CONFIG } from '../../../../ui/button/button.token';
 import { INPUT_CONFIG } from '../../../../ui/input/input.token';
 import { Password } from '../../../../ui/password/password';
 import { Textbox } from '../../../../ui/textbox/textbox';
+import { OAuthFacade } from '../../oauth.facade';
 
 @Component({
   selector: 'app-sign-in',
@@ -23,6 +24,7 @@ export class SignIn {
   protected readonly chevronRight = ChevronRight;
 
   private router = inject(Router);
+  private oauthFacade = inject(OAuthFacade);
 
   protected readonly signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -37,6 +39,14 @@ export class SignIn {
     }
 
     console.log(this.signInForm.value);
+  }
+
+  actionLoginWithGithub(): void {
+    this.oauthFacade.loginWithGithub();
+  }
+
+  actionLoginWithGoogle(): void {
+    this.oauthFacade.loginWithGoogle();
   }
 
   actionNavigateToSignUp() {

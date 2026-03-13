@@ -1,5 +1,6 @@
 <div class="left">
   <div class="art-logo">
+    <!-- biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> -->
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -24,7 +25,8 @@
 
     <form [formGroup]="signInForm" (ngSubmit)="actionSubmit()">
       <div class="social-login">
-        <div class="card-social">
+        <button type="button" class="card-social" (click)="actionLoginWithGithub()">
+          <!-- biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="72 72 496 496"
@@ -38,12 +40,12 @@
             />
           </svg>
           GitHub
-        </div>
+        </button>
 
-        <div class="card-social">
+        <button type="button" class="card-social" (click)="actionLoginWithGoogle()">
           <img src="assets/svg/google-icon.svg" alt="Google" />
           Google
-        </div>
+        </button>
       </div>
 
       <app-textbox id="email" label="Email" formControlName="email" />
