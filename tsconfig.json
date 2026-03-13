@@ -21,6 +21,9 @@
       ],
       "@/*": [
         "src/app/*"
+      ],
+      "@env/*": [
+        "src/environments/*"
       ]
     }
   },
