@@ -1,0 +1,22 @@
+<div class="card" [class.highlight]="highlight()">
+  <div class="header">
+    <div class="icon">
+      <lucide-icon [name]="icon()" size="20"></lucide-icon>
+    </div>
+
+    <button type="button" class="menu">•••</button>
+  </div>
+
+  <p class="title">{{ title() }}</p>
+
+  <h2 class="value">{{ value() }}</h2>
+
+  <div
+    class="change"
+    [class.positive]="type() === 'positive'"
+    [class.negative]="type() === 'negative'"
+  >
+    {{ change() }}
+    <span>este mês</span>
+  </div>
+</div>
