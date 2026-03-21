@@ -1,0 +1,27 @@
+<div class="modal-overlay" [class.visible]="visible()" (click)="onOverlayClick($event)">
+  <div class="modal-container" [class.visible]="visible()">
+    <div class="modal-header">
+      <div class="modal-titles">
+        @if (title()) {
+          <h2 class="modal-title">{{ title() }}</h2>
+        }
+        @if (subtitle()) {
+          <p class="modal-subtitle">{{ subtitle() }}</p>
+        }
+      </div>
+
+      <button
+        class="modal-close"
+        type="button"
+        aria-label="Fechar modal"
+        (click)="onClose()"
+      >
+        <lucide-icon [img]="xIcon" [size]="20" />
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content />
+    </div>
+  </div>
+</div>
