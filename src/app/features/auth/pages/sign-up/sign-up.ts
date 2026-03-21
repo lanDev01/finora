@@ -15,6 +15,7 @@ import { BUTTON_CONFIG } from '../../../../ui/button/button.token';
 import { INPUT_CONFIG } from '../../../../ui/input/input.token';
 import { Password } from '../../../../ui/password/password';
 import { Textbox } from '../../../../ui/textbox/textbox';
+import { AuthFacade } from '../../auth.facade';
 
 export const passwordMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -42,11 +43,13 @@ export class SignUp {
   protected readonly chevronRight = ChevronRight;
 
   private router = inject(Router);
+  private authFacade = inject(AuthFacade);
 
   protected readonly signUpForm = new FormGroup(
     {
+      name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: passwordMatchValidator },
@@ -59,7 +62,15 @@ export class SignUp {
       return;
     }
 
-    console.log(this.signUpForm.value);
+    const { name, email, password } = this.signUpForm.getRawValue();
+
+    this.authFacade
+      .signUp({ name: name!, email: email!, password: password! })
+      .subscribe({
+        error: (err) => {
+          console.error('Erro ao criar conta:', err);
+        },
+      });
   }
 
   actionNavigateToSignIn() {

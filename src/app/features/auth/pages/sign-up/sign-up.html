@@ -24,6 +24,8 @@
     <h1 class="title">Crie sua conta</h1>
 
     <form [formGroup]="signUpForm" (ngSubmit)="actionSubmit()">
+      <app-textbox id="name" label="Nome" formControlName="name" />
+
       <app-textbox id="email" label="Email" formControlName="email" />
 
       <app-password id="password" label="Senha" formControlName="password" />

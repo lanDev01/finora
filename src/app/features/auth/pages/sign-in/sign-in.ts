@@ -7,6 +7,7 @@ import { BUTTON_CONFIG } from '../../../../ui/button/button.token';
 import { INPUT_CONFIG } from '../../../../ui/input/input.token';
 import { Password } from '../../../../ui/password/password';
 import { Textbox } from '../../../../ui/textbox/textbox';
+import { AuthFacade } from '../../auth.facade';
 import { OAuthFacade } from '../../oauth.facade';
 
 @Component({
@@ -24,6 +25,7 @@ export class SignIn {
   protected readonly chevronRight = ChevronRight;
 
   private router = inject(Router);
+  private authFacade = inject(AuthFacade);
   private oauthFacade = inject(OAuthFacade);
 
   protected readonly signInForm = new FormGroup({
@@ -38,7 +40,15 @@ export class SignIn {
       return;
     }
 
-    console.log(this.signInForm.value);
+    const { email, password } = this.signInForm.getRawValue();
+
+    this.authFacade
+      .signIn({ email: email!, password: password! })
+      .subscribe({
+        error: (err) => {
+          console.error('Erro ao fazer login:', err);
+        },
+      });
   }
 
   actionLoginWithGithub(): void {
