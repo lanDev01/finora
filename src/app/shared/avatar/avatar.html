@@ -1,0 +1,12 @@
+@if (hasImage()) {
+  <img
+    class="avatar-image"
+    [src]="avatarUrl()"
+    [alt]="name() ?? 'Avatar do usuário'"
+    (error)="hasImage() ? null : null"
+  />
+} @else {
+  <span class="avatar-initials" [attr.aria-label]="'Avatar de ' + (name() ?? 'usuário')">
+    {{ initials() }}
+  </span>
+}

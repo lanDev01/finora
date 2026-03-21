@@ -1,0 +1,60 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid color-mix(in oklab, var(--primary) 30%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 20%, transparent),
+    color-mix(in oklab, var(--color-indigo-500) 15%, transparent)
+  );
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover {
+    transform: scale(1.05);
+    border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 15%, transparent);
+  }
+
+  // ── Sizes ──────────────────────────────────────────
+  &.size-sm {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-xs);
+  }
+
+  &.size-md {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-sm);
+  }
+
+  &.size-lg {
+    width: 48px;
+    height: 48px;
+    font-size: var(--font-size-base);
+  }
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-initials {
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary);
+  letter-spacing: 0.5px;
+  user-select: none;
+  line-height: 1;
+}
