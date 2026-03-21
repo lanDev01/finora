@@ -1,0 +1,25 @@
+<app-header />
+
+<main>
+  <div class="home-intro">
+    <div>
+      <h2>Olá, {{ userName$ | async }}</h2>
+      <p>Gerencie suas despesas de forma inteligente</p>
+    </div>
+
+    <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+  </div>
+
+  <div class="cards">
+    @for (card of cards; track $index) {
+      <app-summary-card
+        [title]="card.title"
+        [value]="card.value"
+        [icon]="card.icon"
+        [change]="card.change"
+        [type]="card.type"
+        [highlight]="card.highlight"
+      />
+    }
+  </div>
+</main>
