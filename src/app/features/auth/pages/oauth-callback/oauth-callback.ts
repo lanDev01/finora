@@ -1,5 +1,6 @@
 import { Component, inject, type OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
   standalone: true,
@@ -8,12 +9,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class OAuthCallback implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private userService = inject(UserService);
 
   ngOnInit() {
     const params = this.route.snapshot.queryParamMap;
 
     const token = params.get('token');
-    const email = params.get('email');
 
     if (!token) {
       this.router.navigate(['/auth/sign-in']);
@@ -22,10 +23,12 @@ export class OAuthCallback implements OnInit {
 
     localStorage.setItem('access_token', token);
 
-    if (email) {
-      localStorage.setItem('user_email', email);
-    }
-
-    this.router.navigate(['/']);
+    this.userService.loadProfile().subscribe({
+      next: () => this.router.navigate(['/home']),
+      error: () => {
+        localStorage.removeItem('access_token');
+        this.router.navigate(['/auth/sign-in']);
+      },
+    });
   }
 }
