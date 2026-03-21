@@ -1,0 +1,33 @@
+<div
+  class="aside-overlay"
+  [class.visible]="visible()"
+  [class.left]="side() === 'left'"
+  [class.right]="side() === 'right'"
+  (click)="onOverlayClick($event)"
+>
+  <aside
+    class="aside-container"
+    [class.visible]="visible()"
+    [class.left]="side() === 'left'"
+    [class.right]="side() === 'right'"
+  >
+    <div class="aside-header">
+      <div class="aside-titles">
+        @if (title()) {
+          <h2 class="aside-title">{{ title() }}</h2>
+        }
+        @if (subtitle()) {
+          <p class="aside-subtitle">{{ subtitle() }}</p>
+        }
+      </div>
+
+      <button class="aside-close" type="button" aria-label="Fechar painel" (click)="onClose()">
+        <lucide-icon [img]="xIcon" [size]="20" />
+      </button>
+    </div>
+
+    <div class="aside-body">
+      <ng-content />
+    </div>
+  </aside>
+</div>

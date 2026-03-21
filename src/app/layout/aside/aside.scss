@@ -1,0 +1,123 @@
+.aside-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  display: flex;
+  align-items: stretch;
+  transition:
+    background-color 200ms ease,
+    backdrop-filter 200ms ease;
+
+  &.right {
+    justify-content: flex-end;
+  }
+  &.left {
+    justify-content: flex-start;
+  }
+
+  &.visible {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+}
+
+.aside-container {
+  background-color: var(--card);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transition: transform 200ms ease;
+
+  &.right {
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+
+    &.visible {
+      transform: translateX(0);
+    }
+  }
+
+  &.left {
+    border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+
+    &.visible {
+      transform: translateX(0);
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--foreground-subtle);
+    border-radius: var(--radius-full);
+  }
+}
+
+.aside-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-lg) 0;
+  flex-shrink: 0;
+}
+
+.aside-titles {
+  flex: 1;
+}
+
+.aside-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--card-foreground);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.aside-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--foreground-muted);
+  margin: var(--spacing-xs) 0 0;
+  font-weight: var(--font-weight-normal);
+}
+
+.aside-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+}
+
+.aside-body {
+  padding: var(--spacing-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
