@@ -1,0 +1,21 @@
+<header>
+  <app-logo />
+
+  <div class="header-actions">
+    <button
+      class="theme-toggle"
+      (click)="toggleTheme()"
+      [attr.aria-label]="themeLabel"
+      type="button"
+    >
+      <lucide-icon [name]="themeIcon" size="18" style="margin-top: 4px" />
+    </button>
+
+    <app-avatar
+      [name]="userName$ | async"
+      [avatarUrl]="userAvatar$ | async"
+      size="md"
+      [attr.aria-label]="'Avatar de ' + ((userName$ | async) ?? 'usuário')"
+    />
+  </div>
+</header>
