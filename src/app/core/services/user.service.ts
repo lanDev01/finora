@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, type Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 import { environment } from '@env/environment';
+import { BehaviorSubject, type Observable, tap } from 'rxjs';
 
 export interface User {
   id: string;
@@ -14,6 +15,7 @@ export interface User {
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   private userSubject = new BehaviorSubject<User | null>(null);
 
@@ -27,9 +29,9 @@ export class UserService {
 
   /** Busca o perfil do usuário autenticado na API e atualiza o observable */
   loadProfile(): Observable<User> {
-    return this.http.get<User>(`${environment.apiUrl}/users/me`).pipe(
-      tap((user) => this.userSubject.next(user)),
-    );
+    return this.http
+      .get<User>(`${environment.apiUrl}/users/me`)
+      .pipe(tap((user) => this.userSubject.next(user)));
   }
 
   /** Atualiza manualmente os dados do usuário no observable */
@@ -40,5 +42,10 @@ export class UserService {
   /** Limpa os dados do usuário (logout) */
   clearUser(): void {
     this.userSubject.next(null);
+    localStorage.removeItem('access_token');
+
+    setTimeout(() => {
+      this.router.navigate(['/auth/sign-in']);
+    }, 300);
   }
 }
