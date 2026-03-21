@@ -42,6 +42,7 @@ export class Textbox implements ControlValueAccessor, AfterViewInit {
   size = input<InputConfig['size']>(this.config.size ?? 'md');
   variant = input<InputConfig['variant']>(this.config.variant ?? 'default');
   disabled = input<boolean>(this.config.disabled ?? false);
+  type = input<string>('text');
 
   protected readonly id = `textbox-${Math.random().toString(36).slice(2, 7)}`;
   protected readonly control = new FormControl('');
