@@ -1,0 +1,38 @@
+<app-modal title="Editar perfil" subtitle="Atualize suas informações pessoais" (closed)="onClose()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="avatar-section">
+      <div class="avatar-wrapper">
+        @if (avatarPreview()) {
+          <img class="avatar-preview" [src]="avatarPreview()" alt="Foto de perfil" />
+        } @else {
+          <div class="avatar-placeholder">
+            <lucide-icon [img]="cameraIcon" [size]="28" />
+          </div>
+        }
+
+        <label class="avatar-change-btn" title="Alterar foto" aria-label="Alterar foto de perfil">
+          <lucide-icon [img]="cameraIcon" [size]="14" />
+          <input
+            type="file"
+            accept="image/*"
+            class="avatar-input"
+            (change)="onAvatarChange($event)"
+          />
+        </label>
+      </div>
+      <p class="avatar-hint">JPG, PNG ou GIF · máx. 2MB</p>
+    </div>
+
+    <!-- Nome -->
+    <div class="form-group">
+      <app-textbox label="Nome" placeholder="Seu nome completo" formControlName="name" />
+    </div>
+
+    <div class="form-actions">
+      <app-button type="button" variant="ghost" (clicked)="onClose()">Cancelar</app-button>
+      <app-button type="submit" [disabled]="form.invalid || saving">
+        {{ saving ? 'Salvando...' : 'Salvar alterações' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>

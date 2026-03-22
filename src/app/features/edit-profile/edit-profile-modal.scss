@@ -1,0 +1,77 @@
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 88px;
+  height: 88px;
+}
+
+.avatar-preview {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.avatar-placeholder {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  background-color: var(--muted);
+  border: 2px dashed var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--foreground-subtle);
+}
+
+// Botão de câmera sobre o avatar
+.avatar-change-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid var(--card);
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--primary) 85%, black);
+  }
+}
+
+.avatar-input {
+  display: none; // input real escondido, o label faz o clique
+}
+
+.avatar-hint {
+  font-size: var(--font-size-xs);
+  color: var(--foreground-subtle);
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border);
+}
