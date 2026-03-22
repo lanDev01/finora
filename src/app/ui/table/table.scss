@@ -1,0 +1,128 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  color: var(--foreground);
+
+  thead tr {
+    background-color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    font-weight: 600;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--foreground-muted);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background-color var(--transition-fast);
+    cursor: pointer;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: var(--muted);
+    }
+  }
+
+  td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    vertical-align: middle;
+  }
+
+  &--loading tbody tr {
+    pointer-events: none;
+  }
+}
+
+// ── Coluna de ações ──────────────────────────────────────────
+.col-actions {
+  width: 48px;
+  text-align: right;
+}
+
+.btn-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--foreground-subtle);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--destructive) 12%, transparent);
+    color: var(--destructive);
+  }
+}
+
+// ── Badge de categoria ────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+// ── Estado vazio ─────────────────────────────────────────────
+.empty-cell {
+  text-align: center;
+  padding: var(--spacing-2xl) !important;
+  color: var(--foreground-subtle);
+  font-size: var(--font-size-sm);
+  cursor: default;
+}
+
+// ── Skeleton loading ─────────────────────────────────────────
+.skeleton-row td {
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+}
+
+.skeleton {
+  display: block;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    var(--border) 50%,
+    var(--muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+
+  &--sm {
+    width: 28px;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

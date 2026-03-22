@@ -1,0 +1,65 @@
+<div class="table-wrapper">
+  <table class="table" [class.table--loading]="loading()">
+    <thead>
+      <tr>
+        @for (col of columns(); track col.field) {
+          <th>{{ col.header }}</th>
+        }
+        <th class="col-actions"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (loading()) {
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <tr class="skeleton-row">
+            @for (col of columns(); track col.field) {
+              <td><span class="skeleton"></span></td>
+            }
+            <td><span class="skeleton skeleton--sm"></span></td>
+          </tr>
+        }
+      } @else if (rows().length === 0) {
+        <tr>
+          <td [colSpan]="columns().length + 1" class="empty-cell">
+            {{ emptyMessage() }}
+          </td>
+        </tr>
+      } @else {
+        @for (row of rows(); track trackByIndex($index)) {
+          <tr (click)="rowClick.emit(row)">
+            @for (col of columns(); track col.field) {
+              <td>
+                @if (col.isCurrency) {
+                  {{ $any(getCellValue(row, col)) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                } @else if (col.isDate) {
+                  {{ $any(getCellValue(row, col)) | date: 'dd/MM/yyyy' : '' : 'pt-BR' }}
+                } @else if (col.isBadge) {
+                  <span
+                    class="badge"
+                    [style.background-color]="$any(row['category'])?.color + '22'"
+                    [style.color]="$any(row['category'])?.color"
+                  >
+                    {{ getCellValue(row, col) }}
+                  </span>
+                } @else {
+                  {{ getCellValue(row, col) }}
+                }
+              </td>
+            }
+            <td class="col-actions" (click)="$event.stopPropagation()">
+              <button
+                class="btn-delete"
+                type="button"
+                title="Excluir"
+                (click)="deleteClick.emit(row)"
+              >
+                &times;
+              </button>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
