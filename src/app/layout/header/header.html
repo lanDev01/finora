@@ -16,6 +16,7 @@
       [avatarUrl]="userAvatar$ | async"
       size="md"
       [attr.aria-label]="'Avatar de ' + ((userName$ | async) ?? 'usuário')"
+      (click)="openAside()"
     />
   </div>
 </header>

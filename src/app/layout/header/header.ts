@@ -2,6 +2,8 @@ import { ThemeService } from '@/core/services/theme.service';
 import { type User, UserService } from '@/core/services/user.service';
 import { Avatar } from '@/shared/avatar/avatar';
 import { Logo } from '@/shared/logo/logo';
+import { ModalService } from '@/shared/modal/modal.service';
+import { UserMenuAside } from '@/shared/user-menu-aside/user-menu-aside';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LucideAngularModule, Moon, Sun } from 'lucide-angular';
@@ -17,6 +19,7 @@ import { map, type Observable } from 'rxjs';
 export class Header {
   private userService = inject(UserService);
   private themeService = inject(ThemeService);
+  private modalService = inject(ModalService);
 
   readonly user$: Observable<User | null> = this.userService.user$;
 
@@ -41,5 +44,9 @@ export class Header {
 
   toggleTheme() {
     this.themeService.toggleTheme();
+  }
+
+  openAside() {
+    this.modalService.open(UserMenuAside);
   }
 }
