@@ -1,6 +1,7 @@
 import { UserService } from '@/core/services/user.service';
 import { Modal } from '@/shared/modal/modal';
 import type { ModalRef } from '@/shared/modal/modal.service';
+import { ToastService } from '@/shared/toast/toast.service';
 import { Component, computed, inject } from '@angular/core';
 import {
   type AbstractControl,
@@ -27,7 +28,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
   selector: 'app-edit-password-modal',
   imports: [Modal, ReactiveFormsModule, Password, Button, LucideAngularModule],
   templateUrl: './edit-password-modal.html',
-  styleUrl: './edit-password-modal.scss',
+  styleUrls: ['./edit-password-modal.scss'],
   providers: [
     { provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } },
     { provide: INPUT_CONFIG, useValue: { size: 'md', variant: 'default' } },
@@ -36,6 +37,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 export class EditPasswordModal {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  private toast = inject(ToastService);
 
   /** Injected by ModalService */
   __modalRef!: ModalRef<boolean | undefined>;
@@ -74,8 +76,13 @@ export class EditPasswordModal {
         newPassword: newPassword ?? '',
       })
       .subscribe({
-        next: () => this.__modalRef.close(true),
-        error: () => {
+        next: () => {
+          this.toast.success('Senha atualizada com sucesso!');
+          this.__modalRef.close(true);
+        },
+        error: (err) => {
+          const message = err?.error?.message ?? 'Não foi possível atualizar a senha.';
+          this.toast.error(message);
           this.saving = false;
         },
       });

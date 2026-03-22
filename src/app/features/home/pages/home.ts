@@ -1,12 +1,12 @@
-import { AsyncPipe } from '@angular/common';
 import { SummaryCard, type SummaryCardData } from '@/components/summary-card/summary-card';
 import { Header } from '@/layout/header/header';
+import { AsyncPipe } from '@angular/common';
 import { Component, inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import { PiggyBank, TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
-import { type Observable, map } from 'rxjs';
+import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { CreateExpenseModal } from '../../expenses/create-expense-modal';
@@ -27,9 +27,7 @@ export class Home implements OnInit {
   readonly user$: Observable<User | null> = this.userService.user$;
 
   /** Nome do usuário para exibição (com fallback) */
-  readonly userName$: Observable<string> = this.user$.pipe(
-    map((user) => user?.name ?? 'Usuário'),
-  );
+  readonly userName$: Observable<string> = this.user$.pipe(map((user) => user?.name ?? 'Usuário'));
 
   cards: SummaryCardData[] = [
     {
@@ -64,7 +62,6 @@ export class Home implements OnInit {
   ];
 
   ngOnInit(): void {
-    // Se não tem dados do user no observable, tenta carregar da API
     if (!this.userService.currentUser) {
       const token = localStorage.getItem('access_token');
 
@@ -83,12 +80,6 @@ export class Home implements OnInit {
   }
 
   openNewExpenseModal(): void {
-    const ref = this.modalService.open(CreateExpenseModal);
-    ref.afterClosed().subscribe((created) => {
-      if (created) {
-        // TODO: Refresh expense list / dashboard data
-        console.log('Despesa criada com sucesso!');
-      }
-    });
+    this.modalService.open(CreateExpenseModal);
   }
 }

@@ -1,3 +1,4 @@
+import { ToastService } from '@/shared/toast/toast.service';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,6 +29,8 @@ export class SignIn {
   private authFacade = inject(AuthFacade);
   private oauthFacade = inject(OAuthFacade);
 
+  private toast = inject(ToastService);
+
   protected readonly signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -42,13 +45,12 @@ export class SignIn {
 
     const { email, password } = this.signInForm.getRawValue();
 
-    this.authFacade
-      .signIn({ email: email!, password: password! })
-      .subscribe({
-        error: (err) => {
-          console.error('Erro ao fazer login:', err);
-        },
-      });
+    this.authFacade.signIn({ email: email!, password: password! }).subscribe({
+      error: (err) => {
+        console.error('Erro ao fazer login:', err);
+        this.toast.show({ message: err?.error?.message ?? 'Erro ao fazer login', type: 'error' });
+      },
+    });
   }
 
   actionLoginWithGithub(): void {

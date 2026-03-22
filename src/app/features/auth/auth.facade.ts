@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { tap, switchMap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from './auth.service';
 
@@ -14,7 +14,7 @@ export class AuthFacade {
     return this.service.signIn(data).pipe(
       tap((res) => localStorage.setItem('access_token', res.accessToken)),
       switchMap(() => this.userService.loadProfile()),
-      tap(() => this.router.navigate(['/home'])),
+      tap(() => setTimeout(() => this.router.navigate(['/home']), 500)),
     );
   }
 
@@ -22,7 +22,7 @@ export class AuthFacade {
     return this.service.signUp(data).pipe(
       tap((res) => localStorage.setItem('access_token', res.accessToken)),
       switchMap(() => this.userService.loadProfile()),
-      tap(() => this.router.navigate(['/home'])),
+      tap(() => setTimeout(() => this.router.navigate(['/home']), 500)),
     );
   }
 
