@@ -22,4 +22,21 @@
       />
     }
   </div>
+
+  <section class="expenses-section">
+    <div class="expenses-header">
+      <div>
+        <h3 class="expenses-title">Despesas</h3>
+        <p class="expenses-subtitle">{{ currentMonthLabel }}</p>
+      </div>
+    </div>
+
+    <app-table
+      [columns]="expenseColumns"
+      [rows]="expensesRows()"
+      [loading]="expensesLoading()"
+      emptyMessage="Nenhuma despesa registrada neste mês."
+      (deleteClick)="deleteExpense($event)"
+    />
+  </section>
 </main>

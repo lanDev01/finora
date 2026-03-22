@@ -35,4 +35,35 @@ main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
+  margin-bottom: var(--spacing-2xl);
+}
+
+// ── Seção de despesas ─────────────────────────────────────────
+.expenses-section {
+  background-color: var(--card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.expenses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--border);
+}
+
+.expenses-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 2px;
+}
+
+.expenses-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--foreground-subtle);
+  margin: 0;
+  text-transform: capitalize;
 }
