@@ -1,0 +1,55 @@
+<app-aside
+  title="Minha conta"
+  subtitle="Gerencie seu perfil e preferências"
+  side="right"
+  (closed)="onClose()"
+>
+  <div class="panels-wrapper">
+    <div class="panels-track" [class.shifted]="showSettings">
+      <!-- Painel principal -->
+      <div class="panel" aria-hidden="showSettings">
+        <nav class="menu-nav">
+          <button type="button" class="menu-item" (click)="navigate('/dashboard')">
+            <lucide-icon [img]="dashboardIcon" [size]="18" />
+            <span>Dashboard</span>
+          </button>
+
+          <button type="button" class="menu-item" (click)="handleShowSettings()">
+            <lucide-icon [img]="settingsIcon" [size]="18" />
+            <span>Configurações</span>
+            <lucide-icon [img]="chevronRightIcon" [size]="16" class="menu-item-chevron" />
+          </button>
+        </nav>
+
+        <div class="menu-footer">
+          <button type="button" class="menu-item danger" (click)="logout()">
+            <lucide-icon [img]="logoutIcon" [size]="18" />
+            <span>Sair</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Painel de configurações -->
+      <div class="panel" aria-hidden="!showSettings">
+        <nav class="menu-nav">
+          <button type="button" class="menu-item back" (click)="handleShowSettings()">
+            <lucide-icon [img]="chevronLeftIcon" [size]="16" />
+            <span>Voltar</span>
+          </button>
+
+          <div class="menu-divider"></div>
+
+          <button type="button" class="menu-item" (click)="handleEditProfile()">
+            <lucide-icon [img]="userPenIcon" [size]="18" />
+            <span>Editar perfil</span>
+          </button>
+
+          <button type="button" class="menu-item" (click)="handleEditPassword()">
+            <lucide-icon [img]="rectangleEllipsisIcon" [size]="18" />
+            <span>Atualizar senha</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</app-aside>
