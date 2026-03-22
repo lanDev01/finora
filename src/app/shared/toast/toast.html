@@ -1,0 +1,9 @@
+<div class="toast" [class.visible]="visible()" [class]="'toast toast--' + type()">
+  <lucide-icon class="toast__icon" [img]="icon()" [size]="18" />
+
+  <span class="toast__message">{{ message() }}</span>
+
+  <button class="toast__close" type="button" aria-label="Fechar" (click)="dismiss()">
+    <lucide-icon [img]="xIcon" [size]="16" />
+  </button>
+</div>
