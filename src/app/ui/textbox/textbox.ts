@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: <explanation>
 import {
   type AfterViewInit,
   Component,
@@ -19,6 +18,16 @@ import { Input } from '@ui/input/input';
 import { INPUT_CONFIG, type InputConfig } from '@ui/input/input.token';
 import { Label } from '@ui/label/label';
 import { merge } from 'rxjs';
+
+function applyMask(mask: string, value: string): string {
+  if (mask === 'currency') {
+    const digits = value.replace(/\D/g, '');
+    if (!digits) return '';
+    const num = parseInt(digits, 10) / 100;
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return value;
+}
 
 @Component({
   selector: 'app-textbox',
@@ -43,6 +52,7 @@ export class Textbox implements ControlValueAccessor, AfterViewInit {
   variant = input<InputConfig['variant']>(this.config.variant ?? 'default');
   disabled = input<boolean>(this.config.disabled ?? false);
   type = input<string>('text');
+  mask = input<'currency' | null>(null);
 
   protected readonly id = `textbox-${Math.random().toString(36).slice(2, 7)}`;
   protected readonly control = new FormControl('');
@@ -53,6 +63,15 @@ export class Textbox implements ControlValueAccessor, AfterViewInit {
 
   constructor() {
     this.control.valueChanges.subscribe((value) => {
+      const currentMask = this.mask();
+      if (currentMask && value !== null) {
+        const formatted = applyMask(currentMask, value);
+        if (formatted !== value) {
+          this.control.setValue(formatted, { emitEvent: false });
+          this.onChange(formatted);
+          return;
+        }
+      }
       this.onChange(value);
       this.onTouched();
     });
