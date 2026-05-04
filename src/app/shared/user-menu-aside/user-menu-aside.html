@@ -9,9 +9,19 @@
       <!-- Painel principal -->
       <div class="panel" aria-hidden="showSettings">
         <nav class="menu-nav">
-          <button type="button" class="menu-item" (click)="navigate('/dashboard')">
+          <button type="button" class="menu-item" (click)="navigate(['/home'])">
             <lucide-icon [img]="dashboardIcon" [size]="18" />
-            <span>Dashboard</span>
+            <span>Início</span>
+          </button>
+
+          <button type="button" class="menu-item" (click)="navigate(['/home', 'receitas'])">
+            <lucide-icon [img]="trendingUpIcon" [size]="18" />
+            <span>Receitas</span>
+          </button>
+
+          <button type="button" class="menu-item" (click)="navigate(['/home', 'despesas'])">
+            <lucide-icon [img]="trendingDownIcon" [size]="18" />
+            <span>Despesas</span>
           </button>
 
           <button type="button" class="menu-item" (click)="handleShowSettings()">

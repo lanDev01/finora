@@ -14,6 +14,8 @@ import {
   LucideAngularModule,
   RectangleEllipsis,
   Settings,
+  TrendingDown,
+  TrendingUp,
   UserPen,
 } from 'lucide-angular';
 
@@ -39,11 +41,13 @@ export class UserMenuAside {
 
   protected readonly chevronLeftIcon = ChevronLeft;
   protected readonly chevronRightIcon = ChevronRight;
+  protected readonly trendingUpIcon = TrendingUp;
+  protected readonly trendingDownIcon = TrendingDown;
 
   showSettings = false;
 
-  navigate(path: string): void {
-    this.router.navigate([path]);
+  navigate(path: readonly string[]): void {
+    this.router.navigate(path);
     this.__modalRef?.close();
   }
 
