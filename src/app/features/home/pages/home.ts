@@ -17,8 +17,8 @@ import { PiggyBank, TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
 import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
-import { CreateExpenseModal } from '../../expenses/create-expense-modal';
-import { CreateIncomesModal } from '../../incomes/create-incomes-modal';
+import { ExpenseModal } from '../../expenses/expense-modal';
+import { IncomesModal } from '../../incomes/incomes-modal';
 
 @Component({
   selector: 'app-home',
@@ -145,18 +145,44 @@ export class Home implements OnInit {
   }
 
   openNewIncomeModal(): void {
-    const ref = this.modalService.open(CreateIncomesModal);
-    ref.afterClosed().subscribe((created) => {
-      if (created) {
+    const ref = this.modalService.open(IncomesModal);
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) {
         this.getAllIncomes();
       }
     });
   }
 
   openNewExpenseModal(): void {
-    const ref = this.modalService.open(CreateExpenseModal);
-    ref.afterClosed().subscribe((created) => {
-      if (created) {
+    const ref = this.modalService.open(ExpenseModal);
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) {
+        this.getAllExpenses();
+      }
+    });
+  }
+
+  openEditIncomeModal(row: Record<string, unknown>): void {
+    const id = row['id'] as string;
+    const income = this.incomes().find((i) => i.id === id);
+    if (!income) return;
+
+    const ref = this.modalService.open(IncomesModal, { income });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) {
+        this.getAllIncomes();
+      }
+    });
+  }
+
+  openEditExpenseModal(row: Record<string, unknown>): void {
+    const id = row['id'] as string;
+    const expense = this.expenses().find((e) => e.id === id);
+    if (!expense) return;
+
+    const ref = this.modalService.open(ExpenseModal, { expense });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) {
         this.getAllExpenses();
       }
     });
@@ -165,12 +191,20 @@ export class Home implements OnInit {
   onIncomeTableAction(event: { action: string; row: Record<string, unknown> }): void {
     if (event.action === 'delete') {
       this.deleteIncome(event.row);
+      return;
+    }
+    if (event.action === 'edit') {
+      this.openEditIncomeModal(event.row);
     }
   }
 
   onExpenseTableAction(event: { action: string; row: Record<string, unknown> }): void {
     if (event.action === 'delete') {
       this.deleteExpense(event.row);
+      return;
+    }
+    if (event.action === 'edit') {
+      this.openEditExpenseModal(event.row);
     }
   }
 
