@@ -7,12 +7,6 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonDropdown } from '@ui/button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
-import {
-  DEFAULT_TABLE_ROW_ACTIONS,
-  Table,
-  type TableColumn,
-  type TableRowAction,
-} from '@ui/table/table';
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
 import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
@@ -23,7 +17,7 @@ import { LatestLedgerPanel } from '../components/latest-ledger-panel/latest-ledg
 
 @Component({
   selector: 'app-home',
-  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, Table, LatestLedgerPanel],
+  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, LatestLedgerPanel],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -35,40 +29,15 @@ export class Home implements OnInit {
   private expenseService = inject(ExpenseService);
   private incomeService = inject(IncomeService);
 
-  /** Observable com os dados do usuário logado */
   readonly user$: Observable<User | null> = this.userService.user$;
 
-  /** Nome do usuário para exibição (com fallback) */
   readonly userName$: Observable<string> = this.user$.pipe(map((user) => user?.name ?? 'Usuário'));
 
   incomes = signal<Income[]>([]);
   incomesLoading = signal(true);
 
-  incomesRows = (): Record<string, unknown>[] =>
-    this.incomes() as unknown as Record<string, unknown>[];
-
-  readonly incomeColumns: TableColumn[] = [
-    { field: 'description', header: 'Descrição' },
-    { field: 'date', header: 'Data', isDate: true },
-    { field: 'amount', header: 'Valor', isCurrency: true },
-    { field: 'category', header: 'Categoria', isBadge: true },
-  ];
-
   expenses = signal<Expense[]>([]);
   expensesLoading = signal(true);
-
-  expensesRows = (): Record<string, unknown>[] =>
-    this.expenses() as unknown as Record<string, unknown>[];
-
-  readonly expenseColumns: TableColumn[] = [
-    { field: 'description', header: 'Descrição' },
-    { field: 'date', header: 'Data', isDate: true },
-    { field: 'amount', header: 'Valor', isCurrency: true },
-    { field: 'category', header: 'Categoria', isBadge: true },
-  ];
-
-  /** Menu da coluna de ações nas tabelas de receitas/despesas (pode estender além do padrão). */
-  readonly ledgerRowActions: TableRowAction[] = DEFAULT_TABLE_ROW_ACTIONS;
 
   cards: SummaryCardData[] = [
     {
@@ -156,74 +125,8 @@ export class Home implements OnInit {
     });
   }
 
-  openEditIncomeModal(row: Record<string, unknown>): void {
-    const id = row['id'] as string;
-    const income = this.incomes().find((i) => i.id === id);
-    if (!income) return;
-
-    const ref = this.modalService.open(IncomesModal, { income });
-    ref.afterClosed().subscribe((saved) => {
-      if (saved) {
-        this.getAllIncomes();
-      }
-    });
-  }
-
-  openEditExpenseModal(row: Record<string, unknown>): void {
-    const id = row['id'] as string;
-    const expense = this.expenses().find((e) => e.id === id);
-    if (!expense) return;
-
-    const ref = this.modalService.open(ExpenseModal, { expense });
-    ref.afterClosed().subscribe((saved) => {
-      if (saved) {
-        this.getAllExpenses();
-      }
-    });
-  }
-
-  onIncomeTableAction(event: { action: string; row: Record<string, unknown> }): void {
-    if (event.action === 'delete') {
-      this.deleteIncome(event.row);
-      return;
-    }
-    if (event.action === 'edit') {
-      this.openEditIncomeModal(event.row);
-    }
-  }
-
-  onExpenseTableAction(event: { action: string; row: Record<string, unknown> }): void {
-    if (event.action === 'delete') {
-      this.deleteExpense(event.row);
-      return;
-    }
-    if (event.action === 'edit') {
-      this.openEditExpenseModal(event.row);
-    }
-  }
-
-  private deleteIncome(row: Record<string, unknown>): void {
-    const id = row['id'] as string;
-
-    this.incomeService.remove(id).subscribe({
-      next: () => this.getAllIncomes(),
-    });
-  }
-
-  private deleteExpense(row: Record<string, unknown>): void {
-    const id = row['id'] as string;
-
-    this.expenseService.remove(id).subscribe({
-      next: () => this.getAllExpenses(),
-    });
-  }
-
-  get currentMonthLabel(): string {
-    return new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-  }
-
   onViewAllLedger(which: 'incomes' | 'expenses'): void {
-    const id = which === 'incomes' ? 'ledger-receitas' : 'ledger-despesas';
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const path = which === 'incomes' ? ['/home', 'receitas'] : ['/home', 'despesas'];
+    void this.router.navigate(path);
   }
 }

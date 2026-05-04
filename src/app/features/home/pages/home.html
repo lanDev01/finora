@@ -40,40 +40,4 @@
     [expensesLoading]="expensesLoading()"
     (viewAll)="onViewAllLedger($event)"
   />
-
-  <section id="ledger-receitas" class="ledger-section">
-    <div class="ledger-header">
-      <div>
-        <h3 class="ledger-title">Receitas</h3>
-        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
-      </div>
-    </div>
-
-    <app-table
-      [columns]="incomeColumns"
-      [rows]="incomesRows()"
-      [loading]="incomesLoading()"
-      [rowActions]="ledgerRowActions"
-      emptyMessage="Nenhuma receita registrada neste mês."
-      (actionClick)="onIncomeTableAction($event)"
-    />
-  </section>
-
-  <section id="ledger-despesas" class="ledger-section">
-    <div class="ledger-header">
-      <div>
-        <h3 class="ledger-title">Despesas</h3>
-        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
-      </div>
-    </div>
-
-    <app-table
-      [columns]="expenseColumns"
-      [rows]="expensesRows()"
-      [loading]="expensesLoading()"
-      [rowActions]="ledgerRowActions"
-      emptyMessage="Nenhuma despesa registrada neste mês."
-      (actionClick)="onExpenseTableAction($event)"
-    />
-  </section>
 </main>
