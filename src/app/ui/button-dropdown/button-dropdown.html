@@ -4,6 +4,7 @@
     class="button"
     [disabled]="disabled() || loading()"
     [attr.aria-expanded]="open()"
+    [attr.aria-label]="triggerAriaLabel() ?? null"
     aria-haspopup="menu"
     (click)="onTriggerClick($event)"
   >
@@ -15,11 +16,22 @@
       <span class="trigger-label">
         <ng-content />
       </span>
-      <lucide-icon [name]="chevronIcon" class="chevron" [class.chevron-open]="open()" size="18" />
+      @if (showChevron()) {
+        <lucide-icon [name]="chevronIcon" class="chevron" [class.chevron-open]="open()" size="18" />
+      }
     </span>
   </button>
 
-  <div class="panel" [hidden]="!open()" role="menu" (click)="onPanelClick($event)">
+  <div
+    class="panel"
+    [class.panel--overlay]="panelMode() === 'overlay'"
+    [hidden]="!open()"
+    role="menu"
+    (click)="onPanelClick($event)"
+    [style.top.px]="panelMode() === 'overlay' && open() ? overlayTop() : null"
+    [style.left.px]="panelMode() === 'overlay' && open() ? overlayLeft() : null"
+    [style.minWidth.px]="panelMode() === 'overlay' && open() ? overlayMinWidth() : null"
+  >
     <ng-content select=".dropdown-menu" />
   </div>
 </div>
