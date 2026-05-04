@@ -12,7 +12,9 @@
         Adicionar
         <div class="dropdown-menu">
           <button type="button" role="menuitem" (click)="openNewIncomeModal()">Nova receita</button>
-          <button type="button" role="menuitem" (click)="openNewExpenseModal()">Nova despesa</button>
+          <button type="button" role="menuitem" (click)="openNewExpenseModal()">
+            Nova despesa
+          </button>
         </div>
       </app-button-dropdown>
     </div>
@@ -31,7 +33,15 @@
     }
   </div>
 
-  <section class="ledger-section">
+  <app-latest-ledger-panel
+    [incomes]="incomes()"
+    [expenses]="expenses()"
+    [incomesLoading]="incomesLoading()"
+    [expensesLoading]="expensesLoading()"
+    (viewAll)="onViewAllLedger($event)"
+  />
+
+  <section id="ledger-receitas" class="ledger-section">
     <div class="ledger-header">
       <div>
         <h3 class="ledger-title">Receitas</h3>
@@ -49,7 +59,7 @@
     />
   </section>
 
-  <section class="ledger-section">
+  <section id="ledger-despesas" class="ledger-section">
     <div class="ledger-header">
       <div>
         <h3 class="ledger-title">Despesas</h3>

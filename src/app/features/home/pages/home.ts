@@ -19,10 +19,11 @@ import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { ExpenseModal } from '../../expenses/expense-modal';
 import { IncomesModal } from '../../incomes/incomes-modal';
+import { LatestLedgerPanel } from '../components/latest-ledger-panel/latest-ledger-panel';
 
 @Component({
   selector: 'app-home',
-  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, Table],
+  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, Table, LatestLedgerPanel],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -219,5 +220,10 @@ export class Home implements OnInit {
 
   get currentMonthLabel(): string {
     return new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  }
+
+  onViewAllLedger(which: 'incomes' | 'expenses'): void {
+    const id = which === 'incomes' ? 'ledger-receitas' : 'ledger-despesas';
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

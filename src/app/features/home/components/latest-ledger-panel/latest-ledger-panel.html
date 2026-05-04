@@ -1,0 +1,126 @@
+<section class="ledger-panel" aria-label="Resumo das últimas movimentações">
+  <div class="ledger-tabs" role="tablist">
+    <button
+      type="button"
+      class="ledger-tab"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'incomes'"
+      [class.is-active]="activeTab() === 'incomes'"
+      (click)="setTab('incomes')"
+    >
+      Receitas
+    </button>
+    <button
+      type="button"
+      class="ledger-tab"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'expenses'"
+      [class.is-active]="activeTab() === 'expenses'"
+      (click)="setTab('expenses')"
+    >
+      Despesas
+    </button>
+  </div>
+
+  <div class="ledger-body">
+    <div class="ledger-toolbar">
+      <h3 class="ledger-list-title">{{ listTitle() }}</h3>
+      <div class="ledger-toolbar-actions">
+        <div class="search-wrap">
+          <lucide-icon [name]="searchIcon" class="search-icon" size="18" aria-hidden="true" />
+          <input
+            type="search"
+            class="search-input"
+            placeholder="Buscar..."
+            [value]="search()"
+            (input)="onSearchInput($event)"
+            [attr.aria-label]="'Buscar em ' + listTitle().toLowerCase()"
+          />
+        </div>
+        <button type="button" class="filter-btn" title="Filtros em breve">
+          <lucide-icon [name]="filterIcon" size="18" aria-hidden="true" />
+          <span>Filtrar</span>
+        </button>
+      </div>
+    </div>
+
+    @if (isLoading()) {
+      <ul class="tx-list" aria-busy="true">
+        @for (s of [1, 2, 3, 4, 5]; track s) {
+          <li class="tx-row tx-row--skel">
+            <span class="skel skel-ico"></span>
+            <div class="skel-col">
+              <span class="skel skel-lg"></span>
+              <span class="skel skel-sm"></span>
+            </div>
+            <div class="skel-col skel-end">
+              <span class="skel skel-md"></span>
+              <span class="skel skel-tag"></span>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (activeTab() === 'incomes') {
+      @if (displayedIncomes().length === 0) {
+        <p class="ledger-empty">Nenhuma receita neste período.</p>
+      } @else {
+        <ul class="tx-list">
+          @for (item of displayedIncomes(); track item.id) {
+            <li class="tx-row">
+              <div
+                class="tx-icon"
+                [style.background]="item.category.color ? item.category.color + '22' : undefined"
+              >
+                <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+              </div>
+              <div class="tx-main">
+                <p class="tx-title">{{ item.description }}</p>
+                <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+              </div>
+              <div class="tx-side">
+                <p class="tx-amount tx-amount--income">
+                  + {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </p>
+                <span class="tx-tag">{{ item.category.name }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    } @else {
+      @if (displayedExpenses().length === 0) {
+        <p class="ledger-empty">Nenhuma despesa neste período.</p>
+      } @else {
+        <ul class="tx-list">
+          @for (item of displayedExpenses(); track item.id) {
+            <li class="tx-row">
+              <div
+                class="tx-icon"
+                [style.background]="item.category.color ? item.category.color + '22' : undefined"
+              >
+                <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+              </div>
+              <div class="tx-main">
+                <p class="tx-title">{{ item.description }}</p>
+                <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+              </div>
+              <div class="tx-side">
+                <p class="tx-amount tx-amount--expense">
+                  − {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </p>
+                <span class="tx-tag">{{ item.category.name }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    }
+
+    <div class="ledger-footer">
+      <button type="button" class="view-all-link" (click)="emitViewAll()">
+        {{ footerLabel() }}
+        <span class="view-all-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+</section>
