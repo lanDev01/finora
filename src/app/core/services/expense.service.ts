@@ -32,6 +32,11 @@ export class ExpenseService {
     return this.http.post<Expense>(`${environment.apiUrl}/expenses`, payload);
   }
 
+  /** Atualiza uma despesa (PUT) */
+  update(expenseId: string, payload: CreateExpensePayload): Observable<Expense> {
+    return this.http.put<Expense>(`${environment.apiUrl}/expenses/${expenseId}`, payload);
+  }
+
   /** Lista despesas com filtro opcional por mês/ano */
   findAll(filters?: { month?: number; year?: number }): Observable<Expense[]> {
     const params: Record<string, string> = {};

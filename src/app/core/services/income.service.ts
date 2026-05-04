@@ -31,6 +31,11 @@ export class IncomeService {
     return this.http.post<Income>(`${environment.apiUrl}/incomes`, payload);
   }
 
+  /** Atualiza uma receita (PUT) */
+  update(incomeId: string, payload: CreateIncomePayload): Observable<Income> {
+    return this.http.put<Income>(`${environment.apiUrl}/incomes/${incomeId}`, payload);
+  }
+
   findAll(filters?: { month?: number; year?: number }): Observable<Income[]> {
     const params: Record<string, string> = {};
     if (filters?.month) params['month'] = filters.month.toString();
