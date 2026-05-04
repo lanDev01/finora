@@ -5,7 +5,7 @@ import { Header } from '@/layout/header/header';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, type OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Button } from '@ui/button/button';
+import { ButtonDropdown } from '@ui/button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import { Table, type TableColumn } from '@ui/table/table';
 import { PiggyBank, TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
@@ -17,7 +17,7 @@ import { CreateIncomesModal } from '../../incomes/create-incomes-modal';
 
 @Component({
   selector: 'app-home',
-  imports: [Header, Button, SummaryCard, AsyncPipe, Table],
+  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, Table],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
