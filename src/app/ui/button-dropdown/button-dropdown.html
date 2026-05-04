@@ -1,0 +1,25 @@
+<div class="dropdown-root">
+  <button
+    type="button"
+    class="button"
+    [disabled]="disabled() || loading()"
+    [attr.aria-expanded]="open()"
+    aria-haspopup="menu"
+    (click)="onTriggerClick($event)"
+  >
+    @if (loading()) {
+      <span class="spinner" aria-hidden="true"></span>
+    }
+
+    <span class="trigger-inner">
+      <span class="trigger-label">
+        <ng-content />
+      </span>
+      <lucide-icon [name]="chevronIcon" class="chevron" [class.chevron-open]="open()" size="18" />
+    </span>
+  </button>
+
+  <div class="panel" [hidden]="!open()" role="menu" (click)="onPanelClick($event)">
+    <ng-content select=".dropdown-menu" />
+  </div>
+</div>

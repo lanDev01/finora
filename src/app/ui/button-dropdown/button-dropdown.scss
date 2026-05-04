@@ -1,0 +1,116 @@
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+
+  &.full-width {
+    width: 100%;
+
+    .dropdown-root {
+      width: 100%;
+    }
+
+    .button {
+      width: 100%;
+    }
+
+    .panel {
+      left: 0;
+      right: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.dropdown-root {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.trigger-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.trigger-label {
+  min-width: 0;
+}
+
+.chevron {
+  display: flex;
+  flex-shrink: 0;
+  opacity: 0.85;
+  transition: transform var(--transition-base);
+}
+
+.chevron-open {
+  transform: rotate(180deg);
+}
+
+.panel {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  min-width: 100%;
+  padding: var(--spacing-xs);
+  margin: 0;
+  list-style: none;
+
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:
+    0 4px 6px -1px color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 2px 4px -2px color-mix(in oklab, var(--foreground) 6%, transparent);
+}
+
+.panel[hidden] {
+  display: none !important;
+}
+
+:host ::ng-deep .dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 11rem;
+}
+
+:host ::ng-deep .dropdown-menu > button,
+:host ::ng-deep .dropdown-menu > a,
+:host ::ng-deep .dropdown-menu-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-base);
+
+  &:hover {
+    background-color: var(--muted);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--primary) 35%, transparent);
+  }
+}
