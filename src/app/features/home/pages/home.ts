@@ -13,7 +13,7 @@ import {
   type TableColumn,
   type TableRowAction,
 } from '@ui/table/table';
-import { PiggyBank, TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
+import { TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
 import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
@@ -71,14 +71,6 @@ export class Home implements OnInit {
 
   cards: SummaryCardData[] = [
     {
-      title: 'Saldo Total',
-      value: 'R$ 12.450,00',
-      icon: Wallet,
-      change: '+12.5%',
-      type: 'positive',
-      highlight: true,
-    },
-    {
       title: 'Receitas',
       value: 'R$ 18.200,00',
       icon: TrendingUp,
@@ -93,11 +85,12 @@ export class Home implements OnInit {
       type: 'negative',
     },
     {
-      title: 'Economia',
-      value: 'R$ 6.450,00',
-      icon: PiggyBank,
-      change: '+15.7%',
+      title: 'Saldo',
+      value: 'R$ 12.450,00',
+      icon: Wallet,
+      change: '+12.5%',
       type: 'positive',
+      highlight: true,
     },
   ];
 
