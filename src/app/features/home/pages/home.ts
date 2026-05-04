@@ -7,7 +7,12 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonDropdown } from '@ui/button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
-import { Table, type TableColumn } from '@ui/table/table';
+import {
+  DEFAULT_TABLE_ROW_ACTIONS,
+  Table,
+  type TableColumn,
+  type TableRowAction,
+} from '@ui/table/table';
 import { PiggyBank, TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
 import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
@@ -60,6 +65,9 @@ export class Home implements OnInit {
     { field: 'amount', header: 'Valor', isCurrency: true },
     { field: 'category', header: 'Categoria', isBadge: true },
   ];
+
+  /** Menu da coluna de ações nas tabelas de receitas/despesas (pode estender além do padrão). */
+  readonly ledgerRowActions: TableRowAction[] = DEFAULT_TABLE_ROW_ACTIONS;
 
   cards: SummaryCardData[] = [
     {
@@ -154,7 +162,19 @@ export class Home implements OnInit {
     });
   }
 
-  deleteIncome(row: Record<string, unknown>): void {
+  onIncomeTableAction(event: { action: string; row: Record<string, unknown> }): void {
+    if (event.action === 'delete') {
+      this.deleteIncome(event.row);
+    }
+  }
+
+  onExpenseTableAction(event: { action: string; row: Record<string, unknown> }): void {
+    if (event.action === 'delete') {
+      this.deleteExpense(event.row);
+    }
+  }
+
+  private deleteIncome(row: Record<string, unknown>): void {
     const id = row['id'] as string;
 
     this.incomeService.remove(id).subscribe({
@@ -162,7 +182,7 @@ export class Home implements OnInit {
     });
   }
 
-  deleteExpense(row: Record<string, unknown>): void {
+  private deleteExpense(row: Record<string, unknown>): void {
     const id = row['id'] as string;
 
     this.expenseService.remove(id).subscribe({
