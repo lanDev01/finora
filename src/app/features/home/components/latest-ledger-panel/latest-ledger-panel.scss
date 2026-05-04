@@ -199,7 +199,7 @@
   border-top: 1px solid var(--border);
 }
 .view-all-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.5rem;
@@ -211,9 +211,18 @@
   border: none;
   cursor: pointer;
   transition: opacity var(--transition-fast);
+
   &:hover {
     opacity: 0.85;
     text-decoration: underline;
+  }
+
+  lucide-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
   }
 }
 .view-all-arrow {

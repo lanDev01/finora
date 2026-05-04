@@ -1,8 +1,8 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, computed, input, output, signal } from '@angular/core';
 import { type Expense } from '@/core/services/expense.service';
 import { type Income } from '@/core/services/income.service';
-import { LucideAngularModule, Filter, Search } from 'lucide-angular';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component, computed, input, output, signal } from '@angular/core';
+import { ArrowRight, Filter, LucideAngularModule, Search } from 'lucide-angular';
 
 const LIST_LIMIT = 5;
 
@@ -28,6 +28,7 @@ export class LatestLedgerPanel {
 
   protected readonly searchIcon = Search;
   protected readonly filterIcon = Filter;
+  protected readonly arrowRightIcon = ArrowRight;
 
   protected readonly activeTab = signal<'incomes' | 'expenses'>('incomes');
   protected readonly search = signal('');
