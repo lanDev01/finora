@@ -1,4 +1,8 @@
-<app-modal title="Adicionar despesa" subtitle="Registre um novo gasto" (closed)="onClose()">
+<app-modal
+  [title]="headerTitle()"
+  [subtitle]="headerSubtitle()"
+  (closed)="onClose()"
+>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <app-textbox
@@ -39,7 +43,6 @@
               </option>
             }
           </select>
-          <!-- Color indicator for selected category -->
           @if (selectedCategory(); as cat) {
             <span class="selected-color" [style.background-color]="cat.color"></span>
           }
@@ -50,7 +53,7 @@
           title="Nova categoria"
           (click)="openCreateCategory()"
         >
-          <lucide-icon [img]="plusIcon" [size]="18" />
+          <lucide-icon [name]="plusIcon" size="18" />
         </button>
       </div>
     </div>
@@ -69,7 +72,7 @@
     <div class="form-actions">
       <app-button type="button" variant="ghost" (clicked)="onClose()">Cancelar</app-button>
       <app-button type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Salvando...' : 'Salvar' }}
+        {{ saving ? 'Salvando...' : isEdit() ? 'Atualizar' : 'Salvar' }}
       </app-button>
     </div>
   </form>

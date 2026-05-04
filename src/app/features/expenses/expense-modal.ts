@@ -1,5 +1,5 @@
 import { ToastService } from '@/shared/toast/toast.service';
-import { Component, inject, type OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, type OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
@@ -7,32 +7,67 @@ import { INPUT_CONFIG } from '@ui/input/input.token';
 import { Textbox } from '@ui/textbox/textbox';
 import { LucideAngularModule, Plus } from 'lucide-angular';
 import { type Category, CategoryService } from '../../core/services/category.service';
-import { ExpenseService } from '../../core/services/expense.service';
+import { type Expense, ExpenseService } from '../../core/services/expense.service';
 import { Modal } from '../../shared/modal/modal';
 import { type ModalRef, ModalService } from '../../shared/modal/modal.service';
 import { CreateCategoryModal } from '../categories/create-category-modal';
 
+function ledgerAmountToNumber(value: unknown): number {
+  if (typeof value === 'number' && !Number.isNaN(value)) return value;
+  if (typeof value === 'string') return parseFloat(value.replace(',', '.')) || 0;
+  return 0;
+}
+
+function formatPtBrCurrency(amount: number): string {
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+function toDateInputValue(isoDate: string): string {
+  const slice = isoDate.slice(0, 10);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(slice)) return slice;
+  try {
+    return new Date(isoDate).toISOString().split('T')[0];
+  } catch {
+    return new Date().toISOString().split('T')[0];
+  }
+}
+
 @Component({
-  selector: 'app-create-expense-modal',
+  selector: 'app-expense-modal',
   imports: [Modal, ReactiveFormsModule, Textbox, Button, LucideAngularModule],
-  templateUrl: './create-expense-modal.html',
-  styleUrl: './create-expense-modal.scss',
+  templateUrl: './expense-modal.html',
+  styleUrl: './expense-modal.scss',
   providers: [
     { provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } },
     { provide: INPUT_CONFIG, useValue: { size: 'md', variant: 'default' } },
   ],
 })
-export class CreateExpenseModal implements OnInit {
+export class ExpenseModal implements OnInit {
   private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
   private expenseService = inject(ExpenseService);
   private modalService = inject(ModalService);
   private toast = inject(ToastService);
+
   /** Injected by ModalService */
   __modalRef!: ModalRef<boolean | undefined>;
 
+  /** Quando definido, o modal entra em modo edição. */
+  expense = input<Expense | undefined>(undefined);
+
   readonly plusIcon = Plus;
   readonly categories = signal<Category[]>([]);
+
+  readonly isEdit = computed(() => !!this.expense()?.id);
+  readonly headerTitle = computed(() =>
+    this.isEdit() ? 'Editar despesa' : 'Adicionar despesa',
+  );
+  readonly headerSubtitle = computed(() =>
+    this.isEdit() ? 'Atualize os dados deste gasto' : 'Registre um novo gasto',
+  );
 
   saving = false;
 
@@ -77,24 +112,35 @@ export class CreateExpenseModal implements OnInit {
       return;
     }
 
-    this.expenseService
-      .create({
-        description: raw.description!,
-        amount,
-        date: raw.date!,
-        categoryId: raw.categoryId!,
-        notes: raw.notes || undefined,
-      })
-      .subscribe({
-        next: () => {
-          this.toast.success('Despesa criada com sucesso!');
-          this.__modalRef.close(true);
-        },
-        error: () => {
-          this.toast.error('Não foi possível criar a despesa. Tente novamente.');
-          this.saving = false;
-        },
-      });
+    const payload = {
+      description: raw.description!,
+      amount,
+      date: raw.date!,
+      categoryId: raw.categoryId!,
+      notes: raw.notes || undefined,
+    };
+
+    const editing = this.expense();
+    const req = editing?.id
+      ? this.expenseService.update(editing.id, payload)
+      : this.expenseService.create(payload);
+
+    req.subscribe({
+      next: () => {
+        this.toast.success(
+          editing?.id ? 'Despesa atualizada com sucesso!' : 'Despesa criada com sucesso!',
+        );
+        this.__modalRef.close(true);
+      },
+      error: () => {
+        this.toast.error(
+          editing?.id
+            ? 'Não foi possível atualizar a despesa. Tente novamente.'
+            : 'Não foi possível criar a despesa. Tente novamente.',
+        );
+        this.saving = false;
+      },
+    });
   }
 
   onClose(): void {
@@ -104,6 +150,21 @@ export class CreateExpenseModal implements OnInit {
   private loadCategories(): void {
     this.categoryService.loadCategories().subscribe((cats) => {
       this.categories.set(cats);
+      this.patchFromExpense();
+    });
+  }
+
+  private patchFromExpense(): void {
+    const e = this.expense();
+    if (!e) return;
+
+    const amountNum = ledgerAmountToNumber(e.amount);
+    this.form.patchValue({
+      description: e.description,
+      amount: formatPtBrCurrency(amountNum),
+      date: toDateInputValue(e.date),
+      categoryId: e.categoryId,
+      notes: e.notes ?? '',
     });
   }
 }
