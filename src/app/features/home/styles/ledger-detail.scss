@@ -1,0 +1,60 @@
+main {
+  padding: var(--spacing-2xl) var(--spacing-3xl);
+
+  @media screen and (max-width: 568px) {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+}
+
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.page-back {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--foreground-muted);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+}
+
+.ledger-section {
+  background-color: var(--card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.ledger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.ledger-title {
+  color: var(--foreground);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  margin: 0 0 4px;
+}
+
+.ledger-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--foreground-muted);
+  margin-bottom: var(--spacing-lg);
+  text-transform: capitalize;
+}

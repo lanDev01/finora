@@ -1,0 +1,26 @@
+<app-header />
+
+<main>
+  <div class="page-toolbar">
+    <a routerLink="/home" class="page-back">← Voltar ao início</a>
+    <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+  </div>
+
+  <section class="ledger-section">
+    <div class="ledger-header">
+      <div>
+        <h1 class="ledger-title">Despesas</h1>
+        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
+      </div>
+    </div>
+
+    <app-table
+      [columns]="expenseColumns"
+      [rows]="expensesRows()"
+      [loading]="expensesLoading()"
+      [rowActions]="ledgerRowActions"
+      emptyMessage="Nenhuma despesa registrada neste mês."
+      (actionClick)="onExpenseTableAction($event)"
+    />
+  </section>
+</main>

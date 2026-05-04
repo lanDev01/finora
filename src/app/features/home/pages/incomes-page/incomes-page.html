@@ -1,0 +1,26 @@
+<app-header />
+
+<main>
+  <div class="page-toolbar">
+    <a routerLink="/home" class="page-back">← Voltar ao início</a>
+    <app-button type="button" (clicked)="openNewIncomeModal()">Nova receita</app-button>
+  </div>
+
+  <section class="ledger-section">
+    <div class="ledger-header">
+      <div>
+        <h1 class="ledger-title">Receitas</h1>
+        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
+      </div>
+    </div>
+
+    <app-table
+      [columns]="incomeColumns"
+      [rows]="incomesRows()"
+      [loading]="incomesLoading()"
+      [rowActions]="ledgerRowActions"
+      emptyMessage="Nenhuma receita registrada neste mês."
+      (actionClick)="onIncomeTableAction($event)"
+    />
+  </section>
+</main>

@@ -7,4 +7,14 @@ export const HOME_ROUTES: Routes = [
     loadComponent: () => import('./pages/home').then((c) => c.Home),
     canActivate: [authGuard],
   },
+  {
+    path: 'receitas',
+    loadComponent: () => import('./pages/incomes-page/incomes-page').then((c) => c.IncomesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'despesas',
+    loadComponent: () => import('./pages/expenses-page/expenses-page').then((c) => c.ExpensesPage),
+    canActivate: [authGuard],
+  },
 ];
