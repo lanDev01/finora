@@ -5,7 +5,7 @@
         @for (col of columns(); track col.field) {
           <th>{{ col.header }}</th>
         }
-        <th class="col-actions"></th>
+        <th class="col-actions" scope="col" aria-label="Ações"></th>
       </tr>
     </thead>
 
@@ -16,7 +16,7 @@
             @for (col of columns(); track col.field) {
               <td><span class="skeleton"></span></td>
             }
-            <td><span class="skeleton skeleton--sm"></span></td>
+            <td class="col-actions"><span class="skeleton skeleton--sm"></span></td>
           </tr>
         }
       } @else if (rows().length === 0) {
@@ -48,14 +48,25 @@
               </td>
             }
             <td class="col-actions" (click)="$event.stopPropagation()">
-              <button
-                class="btn-delete"
-                type="button"
-                title="Excluir"
-                (click)="deleteClick.emit(row)"
+              <app-button-dropdown
+                panelMode="overlay"
+                [showChevron]="false"
+                triggerAriaLabel="Ações da linha"
               >
-                &times;
-              </button>
+                <lucide-icon [name]="moreIcon" size="18" aria-hidden="true" />
+                <div class="dropdown-menu">
+                  @for (action of rowActions(); track trackActionId($index, action)) {
+                    <button
+                      type="button"
+                      role="menuitem"
+                      [class.is-danger]="!!action.danger"
+                      (click)="emitRowAction(action.id, row)"
+                    >
+                      {{ action.label }}
+                    </button>
+                  }
+                </div>
+              </app-button-dropdown>
             </td>
           </tr>
         }

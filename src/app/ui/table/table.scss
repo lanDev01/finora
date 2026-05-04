@@ -35,10 +35,6 @@
     &:last-child {
       border-bottom: none;
     }
-
-    &:hover {
-      background-color: var(--muted);
-    }
   }
 
   td {
@@ -53,29 +49,14 @@
 
 // ── Coluna de ações ──────────────────────────────────────────
 .col-actions {
-  width: 48px;
+  width: 1%;
   text-align: right;
+  vertical-align: middle;
 }
 
-.btn-delete {
+.col-actions app-button-dropdown {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: transparent;
-  color: var(--foreground-subtle);
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast);
-
-  &:hover {
-    background-color: color-mix(in oklab, var(--destructive) 12%, transparent);
-    color: var(--destructive);
-  }
+  vertical-align: middle;
 }
 
 // ── Badge de categoria ────────────────────────────────────────
@@ -108,12 +89,7 @@
   display: block;
   height: 14px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(
-    90deg,
-    var(--muted) 25%,
-    var(--border) 50%,
-    var(--muted) 75%
-  );
+  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 
@@ -123,6 +99,10 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
