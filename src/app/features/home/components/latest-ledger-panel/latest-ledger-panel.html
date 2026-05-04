@@ -1,5 +1,10 @@
 <section class="ledger-panel" aria-label="Resumo das últimas movimentações">
   <div class="ledger-tabs" role="tablist">
+    <span
+      class="ledger-tab-indicator"
+      aria-hidden="true"
+      [class.ledger-tab-indicator--right]="activeTab() === 'expenses'"
+    ></span>
     <button
       type="button"
       class="ledger-tab"
@@ -44,77 +49,137 @@
       </div>
     </div>
 
-    @if (isLoading()) {
-      <ul class="tx-list" aria-busy="true">
-        @for (s of [1, 2, 3, 4, 5]; track s) {
-          <li class="tx-row tx-row--skel">
-            <span class="skel skel-ico"></span>
-            <div class="skel-col">
-              <span class="skel skel-lg"></span>
-              <span class="skel skel-sm"></span>
+    <div class="ledger-panes">
+      <div
+        class="ledger-pane"
+        [class.ledger-pane--active]="activeTab() === 'incomes'"
+        role="tabpanel"
+        [attr.aria-hidden]="activeTab() !== 'incomes'"
+        id="ledger-pane-incomes"
+      >
+        @if (incomesLoading()) {
+          <ul class="tx-list" aria-busy="true">
+            @for (s of [1, 2, 3, 4, 5]; track s) {
+              <li class="tx-row tx-row--skel">
+                <span class="skel skel-ico"></span>
+                <div class="skel-col">
+                  <span class="skel skel-lg"></span>
+                  <span class="skel skel-sm"></span>
+                </div>
+                <div class="skel-col skel-end">
+                  <span class="skel skel-md"></span>
+                  <span class="skel skel-tag"></span>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else if (displayedIncomes().length === 0) {
+          <div class="ledger-empty-state">
+            <div class="ledger-empty-icon-wrap">
+              <lucide-icon [name]="trendingUpIcon" class="ledger-empty-icon" size="44" aria-hidden="true" />
             </div>
-            <div class="skel-col skel-end">
-              <span class="skel skel-md"></span>
-              <span class="skel skel-tag"></span>
-            </div>
-          </li>
+            <h4 class="ledger-empty-title">
+              {{ incomesEmptyDueToSearch() ? 'Nenhum resultado' : 'Nenhuma receita por aqui' }}
+            </h4>
+            <p class="ledger-empty-desc">
+              {{
+                incomesEmptyDueToSearch()
+                  ? 'Tente outro termo na busca ou apague o texto para voltar a ver as últimas receitas.'
+                  : 'Quando você registrar receitas neste mês, elas aparecerão nesta lista. Use Adicionar no topo da página para incluir a primeira.'
+              }}
+            </p>
+          </div>
+        } @else {
+          <ul class="tx-list">
+            @for (item of displayedIncomes(); track item.id) {
+              <li class="tx-row">
+                <div
+                  class="tx-icon"
+                  [style.background]="item.category.color ? item.category.color + '22' : undefined"
+                >
+                  <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+                </div>
+                <div class="tx-main">
+                  <p class="tx-title">{{ item.description }}</p>
+                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+                </div>
+                <div class="tx-side">
+                  <p class="tx-amount tx-amount--income">
+                    + {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                  </p>
+                  <span class="tx-tag">{{ item.category.name }}</span>
+                </div>
+              </li>
+            }
+          </ul>
         }
-      </ul>
-    } @else if (activeTab() === 'incomes') {
-      @if (displayedIncomes().length === 0) {
-        <p class="ledger-empty">Nenhuma receita neste período.</p>
-      } @else {
-        <ul class="tx-list">
-          @for (item of displayedIncomes(); track item.id) {
-            <li class="tx-row">
-              <div
-                class="tx-icon"
-                [style.background]="item.category.color ? item.category.color + '22' : undefined"
-              >
-                <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
-              </div>
-              <div class="tx-main">
-                <p class="tx-title">{{ item.description }}</p>
-                <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
-              </div>
-              <div class="tx-side">
-                <p class="tx-amount tx-amount--income">
-                  + {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-                </p>
-                <span class="tx-tag">{{ item.category.name }}</span>
-              </div>
-            </li>
-          }
-        </ul>
-      }
-    } @else {
-      @if (displayedExpenses().length === 0) {
-        <p class="ledger-empty">Nenhuma despesa neste período.</p>
-      } @else {
-        <ul class="tx-list">
-          @for (item of displayedExpenses(); track item.id) {
-            <li class="tx-row">
-              <div
-                class="tx-icon"
-                [style.background]="item.category.color ? item.category.color + '22' : undefined"
-              >
-                <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
-              </div>
-              <div class="tx-main">
-                <p class="tx-title">{{ item.description }}</p>
-                <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
-              </div>
-              <div class="tx-side">
-                <p class="tx-amount tx-amount--expense">
-                  − {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-                </p>
-                <span class="tx-tag">{{ item.category.name }}</span>
-              </div>
-            </li>
-          }
-        </ul>
-      }
-    }
+      </div>
+
+      <div
+        class="ledger-pane"
+        [class.ledger-pane--active]="activeTab() === 'expenses'"
+        role="tabpanel"
+        [attr.aria-hidden]="activeTab() !== 'expenses'"
+        id="ledger-pane-expenses"
+      >
+        @if (expensesLoading()) {
+          <ul class="tx-list" aria-busy="true">
+            @for (s of [1, 2, 3, 4, 5]; track s) {
+              <li class="tx-row tx-row--skel">
+                <span class="skel skel-ico"></span>
+                <div class="skel-col">
+                  <span class="skel skel-lg"></span>
+                  <span class="skel skel-sm"></span>
+                </div>
+                <div class="skel-col skel-end">
+                  <span class="skel skel-md"></span>
+                  <span class="skel skel-tag"></span>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else if (displayedExpenses().length === 0) {
+          <div class="ledger-empty-state">
+            <div class="ledger-empty-icon-wrap">
+              <lucide-icon [name]="trendingDownIcon" class="ledger-empty-icon" size="44" aria-hidden="true" />
+            </div>
+            <h4 class="ledger-empty-title">
+              {{ expensesEmptyDueToSearch() ? 'Nenhum resultado' : 'Nenhuma despesa por aqui' }}
+            </h4>
+            <p class="ledger-empty-desc">
+              {{
+                expensesEmptyDueToSearch()
+                  ? 'Tente outro termo na busca ou apague o texto para voltar a ver as últimas despesas.'
+                  : 'Quando você registrar despesas neste mês, elas aparecerão nesta lista. Use Adicionar no topo da página para incluir a primeira.'
+              }}
+            </p>
+          </div>
+        } @else {
+          <ul class="tx-list">
+            @for (item of displayedExpenses(); track item.id) {
+              <li class="tx-row">
+                <div
+                  class="tx-icon"
+                  [style.background]="item.category.color ? item.category.color + '22' : undefined"
+                >
+                  <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+                </div>
+                <div class="tx-main">
+                  <p class="tx-title">{{ item.description }}</p>
+                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+                </div>
+                <div class="tx-side">
+                  <p class="tx-amount tx-amount--expense">
+                    − {{ amountNum(item.amount) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                  </p>
+                  <span class="tx-tag">{{ item.category.name }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
 
     <div class="ledger-footer">
       <button type="button" class="view-all-link" (click)="emitViewAll()">

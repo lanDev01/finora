@@ -2,7 +2,14 @@ import { type Expense } from '@/core/services/expense.service';
 import { type Income } from '@/core/services/income.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
-import { ArrowRight, Filter, LucideAngularModule, Search } from 'lucide-angular';
+import {
+  ArrowRight,
+  Filter,
+  LucideAngularModule,
+  Search,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-angular';
 
 const LIST_LIMIT = 5;
 
@@ -29,6 +36,8 @@ export class LatestLedgerPanel {
   protected readonly searchIcon = Search;
   protected readonly filterIcon = Filter;
   protected readonly arrowRightIcon = ArrowRight;
+  protected readonly trendingUpIcon = TrendingUp;
+  protected readonly trendingDownIcon = TrendingDown;
 
   protected readonly activeTab = signal<'incomes' | 'expenses'>('incomes');
   protected readonly search = signal('');
@@ -73,6 +82,16 @@ export class LatestLedgerPanel {
       );
     }
     return list.slice(0, LIST_LIMIT);
+  });
+
+  protected readonly incomesEmptyDueToSearch = computed(() => {
+    const q = this.search().trim();
+    return q.length > 0 && this.displayedIncomes().length === 0 && !this.incomesLoading();
+  });
+
+  protected readonly expensesEmptyDueToSearch = computed(() => {
+    const q = this.search().trim();
+    return q.length > 0 && this.displayedExpenses().length === 0 && !this.expensesLoading();
   });
 
   protected setTab(tab: 'incomes' | 'expenses'): void {
