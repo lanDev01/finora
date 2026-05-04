@@ -1,0 +1,75 @@
+<app-modal title="Adicionar receita" subtitle="Registre uma nova entrada" (closed)="onClose()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <app-textbox
+        label="Descrição"
+        placeholder="Ex: Salário, freelance"
+        formControlName="description"
+      />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group flex-1">
+        <app-textbox
+          label="Valor (R$)"
+          placeholder="0,00"
+          formControlName="amount"
+          mask="currency"
+        />
+      </div>
+      <div class="form-group flex-1">
+        <app-textbox label="Data" type="date" formControlName="date" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label" for="income-category-select">Categoria</label>
+      <div class="category-row">
+        <div class="select-wrapper">
+          <select
+            id="income-category-select"
+            class="category-select"
+            formControlName="categoryId"
+            [style.padding-left]="selectedCategory() ? '2.05rem' : '0.75rem'"
+          >
+            <option value="" disabled>Selecione uma categoria</option>
+            @for (cat of categories(); track cat.id) {
+              <option [value]="cat.id">
+                {{ cat.name }}
+              </option>
+            }
+          </select>
+          @if (selectedCategory(); as cat) {
+            <span class="selected-color" [style.background-color]="cat.color"></span>
+          }
+        </div>
+        <button
+          type="button"
+          class="add-category-btn"
+          title="Nova categoria"
+          (click)="openCreateCategory()"
+        >
+          <lucide-icon [img]="plusIcon" [size]="18" />
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label" for="income-notes-textarea">Observação</label>
+      <textarea
+        id="income-notes-textarea"
+        class="notes-textarea"
+        formControlName="notes"
+        placeholder="Observação opcional..."
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="form-actions">
+      <app-button type="button" variant="ghost" (clicked)="onClose()">Cancelar</app-button>
+      <app-button type="submit" [disabled]="form.invalid || saving">
+        {{ saving ? 'Salvando...' : 'Salvar' }}
+      </app-button>
+    </div>
+  </form>
+</app-modal>

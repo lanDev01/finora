@@ -1,5 +1,6 @@
 import { SummaryCard, type SummaryCardData } from '@/components/summary-card/summary-card';
 import { type Expense, ExpenseService } from '@/core/services/expense.service';
+import { type Income, IncomeService } from '@/core/services/income.service';
 import { Header } from '@/layout/header/header';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, type OnInit, signal } from '@angular/core';
@@ -12,6 +13,7 @@ import { map, type Observable } from 'rxjs';
 import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { CreateExpenseModal } from '../../expenses/create-expense-modal';
+import { CreateIncomesModal } from '../../incomes/create-incomes-modal';
 
 @Component({
   selector: 'app-home',
@@ -25,12 +27,26 @@ export class Home implements OnInit {
   private router = inject(Router);
   private modalService = inject(ModalService);
   private expenseService = inject(ExpenseService);
+  private incomeService = inject(IncomeService);
 
   /** Observable com os dados do usuário logado */
   readonly user$: Observable<User | null> = this.userService.user$;
 
   /** Nome do usuário para exibição (com fallback) */
   readonly userName$: Observable<string> = this.user$.pipe(map((user) => user?.name ?? 'Usuário'));
+
+  incomes = signal<Income[]>([]);
+  incomesLoading = signal(true);
+
+  incomesRows = (): Record<string, unknown>[] =>
+    this.incomes() as unknown as Record<string, unknown>[];
+
+  readonly incomeColumns: TableColumn[] = [
+    { field: 'description', header: 'Descrição' },
+    { field: 'date', header: 'Data', isDate: true },
+    { field: 'amount', header: 'Valor', isCurrency: true },
+    { field: 'category', header: 'Categoria', isBadge: true },
+  ];
 
   expenses = signal<Expense[]>([]);
   expensesLoading = signal(true);
@@ -94,7 +110,19 @@ export class Home implements OnInit {
       });
     }
 
+    this.getAllIncomes();
     this.getAllExpenses();
+  }
+
+  getAllIncomes(): void {
+    const now = new Date();
+    this.incomeService.findAll({ month: now.getMonth() + 1, year: now.getFullYear() }).subscribe({
+      next: (data) => {
+        this.incomes.set(data);
+        this.incomesLoading.set(false);
+      },
+      error: () => this.incomesLoading.set(false),
+    });
   }
 
   getAllExpenses(): void {
@@ -108,12 +136,29 @@ export class Home implements OnInit {
     });
   }
 
+  openNewIncomeModal(): void {
+    const ref = this.modalService.open(CreateIncomesModal);
+    ref.afterClosed().subscribe((created) => {
+      if (created) {
+        this.getAllIncomes();
+      }
+    });
+  }
+
   openNewExpenseModal(): void {
     const ref = this.modalService.open(CreateExpenseModal);
     ref.afterClosed().subscribe((created) => {
       if (created) {
         this.getAllExpenses();
       }
+    });
+  }
+
+  deleteIncome(row: Record<string, unknown>): void {
+    const id = row['id'] as string;
+
+    this.incomeService.remove(id).subscribe({
+      next: () => this.getAllIncomes(),
     });
   }
 

@@ -26,7 +26,10 @@ main {
     font-weight: 300;
   }
 
-  app-button {
+  .home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
     margin-left: auto;
   }
 }
@@ -38,8 +41,8 @@ main {
   margin-bottom: var(--spacing-2xl);
 }
 
-// ── Seção de despesas ─────────────────────────────────────────
-.expenses-section {
+// ── Seções receitas / despesas ───────────────────────────────
+.ledger-section {
   background-color: var(--card);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
@@ -50,16 +53,20 @@ main {
   gap: var(--spacing-lg);
 
   padding: var(--spacing-lg) var(--spacing-xl);
+
+  & + & {
+    margin-top: var(--spacing-xl);
+  }
 }
 
-.expenses-header {
+.ledger-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
 }
 
-.expenses-title {
+.ledger-title {
   color: var(--foreground);
 
   font-weight: 600;
@@ -67,7 +74,7 @@ main {
   margin: 0 0 4px;
 }
 
-.expenses-subtitle {
+.ledger-subtitle {
   font-size: var(--font-size-sm);
   color: var(--foreground-muted);
   margin-bottom: var(--spacing-lg);

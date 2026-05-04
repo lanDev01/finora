@@ -7,7 +7,10 @@
       <p>Gerencie suas despesas de forma inteligente</p>
     </div>
 
-    <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+    <div class="home-actions">
+      <app-button type="button" (clicked)="openNewIncomeModal()">Nova receita</app-button>
+      <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+    </div>
   </div>
 
   <div class="cards">
@@ -23,11 +26,28 @@
     }
   </div>
 
-  <section class="expenses-section">
-    <div class="expenses-header">
+  <section class="ledger-section">
+    <div class="ledger-header">
       <div>
-        <h3 class="expenses-title">Despesas</h3>
-        <p class="expenses-subtitle">{{ currentMonthLabel }}</p>
+        <h3 class="ledger-title">Receitas</h3>
+        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
+      </div>
+    </div>
+
+    <app-table
+      [columns]="incomeColumns"
+      [rows]="incomesRows()"
+      [loading]="incomesLoading()"
+      emptyMessage="Nenhuma receita registrada neste mês."
+      (deleteClick)="deleteIncome($event)"
+    />
+  </section>
+
+  <section class="ledger-section">
+    <div class="ledger-header">
+      <div>
+        <h3 class="ledger-title">Despesas</h3>
+        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
       </div>
     </div>
 
