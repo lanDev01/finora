@@ -6,6 +6,7 @@ import { BUTTON_CONFIG } from '@ui/button/button.token';
 import { INPUT_CONFIG } from '@ui/input/input.token';
 import { Textbox } from '@ui/textbox/textbox';
 import { CategoryService, type Category } from '../../core/services/category.service';
+import { ToastService } from '@/shared/toast/toast.service';
 import { Modal } from '../../shared/modal/modal';
 import { type ModalRef } from '../../shared/modal/modal.service';
 import { CATEGORY_ICON_OPTIONS, type CategoryIconSlug } from './category-icon-options';
@@ -263,6 +264,7 @@ const PRESET_COLORS = [
 export class CreateCategoryModal {
   private fb = inject(FormBuilder);
   private categoryService = inject(CategoryService);
+  private toast = inject(ToastService);
 
   /** Injected by ModalService */
   __modalRef!: ModalRef<Category | undefined>;
@@ -300,9 +302,11 @@ export class CreateCategoryModal {
       })
       .subscribe({
         next: (category) => {
+          this.toast.success('Categoria criada com sucesso!');
           this.__modalRef.close(category);
         },
         error: () => {
+          this.toast.error('Não foi possível criar a categoria. Tente novamente.');
           this.saving = false;
         },
       });
