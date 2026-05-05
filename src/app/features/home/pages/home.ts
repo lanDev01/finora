@@ -1,4 +1,5 @@
 import { SummaryCard, type SummaryCardData } from '@/components/summary-card/summary-card';
+import { AnalyticsService, type DashboardSummary } from '@/core/services/analytics.service';
 import { type Expense, ExpenseService } from '@/core/services/expense.service';
 import { type Income, IncomeService } from '@/core/services/income.service';
 import { Header } from '@/layout/header/header';
@@ -28,6 +29,9 @@ export class Home implements OnInit {
   private modalService = inject(ModalService);
   private expenseService = inject(ExpenseService);
   private incomeService = inject(IncomeService);
+  private analyticsService = inject(AnalyticsService);
+
+  private readonly brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
   readonly user$: Observable<User | null> = this.userService.user$;
 
@@ -39,30 +43,7 @@ export class Home implements OnInit {
   expenses = signal<Expense[]>([]);
   expensesLoading = signal(true);
 
-  cards: SummaryCardData[] = [
-    {
-      title: 'Receitas',
-      value: 'R$ 18.200,00',
-      icon: TrendingUp,
-      change: '+8.2%',
-      type: 'positive',
-    },
-    {
-      title: 'Despesas',
-      value: 'R$ 5.750,00',
-      icon: TrendingDown,
-      change: '-3.1%',
-      type: 'negative',
-    },
-    {
-      title: 'Saldo',
-      value: 'R$ 12.450,00',
-      icon: Wallet,
-      change: '+12.5%',
-      type: 'positive',
-      highlight: true,
-    },
-  ];
+  cards = signal<SummaryCardData[]>(this.dashboardToCardsPlaceholder());
 
   ngOnInit(): void {
     if (!this.userService.currentUser()) {
@@ -83,6 +64,79 @@ export class Home implements OnInit {
 
     this.getAllIncomes();
     this.getAllExpenses();
+    this.loadDashboard();
+  }
+
+  private formatPct(n: number): string {
+    const sign = n >= 0 ? '+' : '';
+    return `${sign}${n.toFixed(1)}%`;
+  }
+
+  private dashboardToCards(d: DashboardSummary): SummaryCardData[] {
+    const balanceType: SummaryCardData['type'] = d.balance >= 0 ? 'positive' : 'negative';
+    return [
+      {
+        title: 'Receitas',
+        value: this.brl.format(d.incomeTotal),
+        icon: TrendingUp,
+        change: this.formatPct(d.incomePercentChange),
+        type: 'positive',
+      },
+      {
+        title: 'Despesas',
+        value: this.brl.format(d.expenseTotal),
+        icon: TrendingDown,
+        change: this.formatPct(d.expensePercentChange),
+        type: 'negative',
+      },
+      {
+        title: 'Saldo',
+        value: this.brl.format(d.balance),
+        icon: Wallet,
+        change: this.formatPct(d.balancePercentChange),
+        type: balanceType,
+        highlight: true,
+      },
+    ];
+  }
+
+  /** Placeholder até o GET /analytics/dashboard responder */
+  private dashboardToCardsPlaceholder(): SummaryCardData[] {
+    const dash = '—';
+    return [
+      {
+        title: 'Receitas',
+        value: dash,
+        icon: TrendingUp,
+        change: dash,
+        type: 'neutral',
+      },
+      {
+        title: 'Despesas',
+        value: dash,
+        icon: TrendingDown,
+        change: dash,
+        type: 'neutral',
+      },
+      {
+        title: 'Saldo',
+        value: dash,
+        icon: Wallet,
+        change: dash,
+        type: 'neutral',
+        highlight: true,
+      },
+    ];
+  }
+
+  loadDashboard(): void {
+    const now = new Date();
+    this.analyticsService.getDashboard({ month: now.getMonth() + 1, year: now.getFullYear() }).subscribe({
+      next: (d) => this.cards.set(this.dashboardToCards(d)),
+      error: () => {
+        /* mantém placeholder em falha */
+      },
+    });
   }
 
   getAllIncomes(): void {
@@ -112,6 +166,7 @@ export class Home implements OnInit {
     ref.afterClosed().subscribe((saved) => {
       if (saved) {
         this.getAllIncomes();
+        this.loadDashboard();
       }
     });
   }
@@ -121,6 +176,7 @@ export class Home implements OnInit {
     ref.afterClosed().subscribe((saved) => {
       if (saved) {
         this.getAllExpenses();
+        this.loadDashboard();
       }
     });
   }

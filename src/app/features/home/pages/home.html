@@ -21,7 +21,7 @@
   </div>
 
   <div class="cards">
-    @for (card of cards; track $index) {
+    @for (card of cards(); track $index) {
       <app-summary-card
         [title]="card.title"
         [value]="card.value"
