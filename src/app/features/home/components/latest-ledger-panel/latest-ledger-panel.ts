@@ -1,5 +1,9 @@
 import { type Expense } from '@/core/services/expense.service';
 import { type Income } from '@/core/services/income.service';
+import {
+  categoryLucideIcon,
+  isKnownCategoryIconSlug,
+} from '@/features/categories/category-icon-options';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
 import {
@@ -111,9 +115,10 @@ export class LatestLedgerPanel {
     this.viewAll.emit(this.activeTab());
   }
 
-  protected categoryInitial(row: Income | Expense): string {
-    const icon = row.category?.icon?.trim();
-    if (icon && icon.length <= 4) return icon;
+  protected readonly categoryLucideIcon = categoryLucideIcon;
+  protected readonly isKnownCategoryIconSlug = isKnownCategoryIconSlug;
+
+  protected categoryFallbackInitial(row: Income | Expense): string {
     const n = row.category?.name?.trim();
     if (n?.length) return n.charAt(0).toUpperCase();
     return '?';

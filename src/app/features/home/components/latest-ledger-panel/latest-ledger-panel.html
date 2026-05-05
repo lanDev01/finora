@@ -97,7 +97,17 @@
                   class="tx-icon"
                   [style.background]="item.category.color ? item.category.color + '22' : undefined"
                 >
-                  <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+                  @if (isKnownCategoryIconSlug(item.category.icon)) {
+                    <lucide-icon
+                      class="tx-icon-lucide"
+                      [name]="categoryLucideIcon(item.category.icon)"
+                      size="20"
+                      [style.color]="item.category.color"
+                      aria-hidden="true"
+                    />
+                  } @else {
+                    <span class="tx-icon-char">{{ categoryFallbackInitial(item) }}</span>
+                  }
                 </div>
                 <div class="tx-main">
                   <p class="tx-title">{{ item.description }}</p>
@@ -162,7 +172,17 @@
                   class="tx-icon"
                   [style.background]="item.category.color ? item.category.color + '22' : undefined"
                 >
-                  <span class="tx-icon-char">{{ categoryInitial(item) }}</span>
+                  @if (isKnownCategoryIconSlug(item.category.icon)) {
+                    <lucide-icon
+                      class="tx-icon-lucide"
+                      [name]="categoryLucideIcon(item.category.icon)"
+                      size="20"
+                      [style.color]="item.category.color"
+                      aria-hidden="true"
+                    />
+                  } @else {
+                    <span class="tx-icon-char">{{ categoryFallbackInitial(item) }}</span>
+                  }
                 </div>
                 <div class="tx-main">
                   <p class="tx-title">{{ item.description }}</p>
