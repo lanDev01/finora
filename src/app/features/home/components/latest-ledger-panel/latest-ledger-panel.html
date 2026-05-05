@@ -42,10 +42,6 @@
             [attr.aria-label]="'Buscar em ' + listTitle().toLowerCase()"
           />
         </div>
-        <button type="button" class="filter-btn" title="Filtros em breve">
-          <lucide-icon [name]="filterIcon" size="18" aria-hidden="true" />
-          <span>Filtrar</span>
-        </button>
       </div>
     </div>
 
@@ -76,7 +72,12 @@
         } @else if (displayedIncomes().length === 0) {
           <div class="ledger-empty-state">
             <div class="ledger-empty-icon-wrap">
-              <lucide-icon [name]="trendingUpIcon" class="ledger-empty-icon" size="44" aria-hidden="true" />
+              <lucide-icon
+                [name]="trendingUpIcon"
+                class="ledger-empty-icon"
+                size="44"
+                aria-hidden="true"
+              />
             </div>
             <h4 class="ledger-empty-title">
               {{ incomesEmptyDueToSearch() ? 'Nenhum resultado' : 'Nenhuma receita por aqui' }}
@@ -151,7 +152,12 @@
         } @else if (displayedExpenses().length === 0) {
           <div class="ledger-empty-state">
             <div class="ledger-empty-icon-wrap">
-              <lucide-icon [name]="trendingDownIcon" class="ledger-empty-icon" size="44" aria-hidden="true" />
+              <lucide-icon
+                [name]="trendingDownIcon"
+                class="ledger-empty-icon"
+                size="44"
+                aria-hidden="true"
+              />
             </div>
             <h4 class="ledger-empty-title">
               {{ expensesEmptyDueToSearch() ? 'Nenhum resultado' : 'Nenhuma despesa por aqui' }}
