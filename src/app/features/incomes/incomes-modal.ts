@@ -10,11 +10,15 @@ import { type Category, CategoryService } from '../../core/services/category.ser
 import { type Income, IncomeService } from '../../core/services/income.service';
 import { Modal } from '../../shared/modal/modal';
 import { type ModalRef, ModalService } from '../../shared/modal/modal.service';
+import { parseAmountField } from '@/shared/parse-amount-field';
 import { CreateCategoryModal } from '../categories/create-category-modal';
 
 function ledgerAmountToNumber(value: unknown): number {
   if (typeof value === 'number' && !Number.isNaN(value)) return value;
-  if (typeof value === 'string') return parseFloat(value.replace(',', '.')) || 0;
+  if (typeof value === 'string') {
+    const n = parseAmountField(value);
+    return Number.isFinite(n) ? n : 0;
+  }
   return 0;
 }
 
@@ -102,8 +106,8 @@ export class IncomesModal implements OnInit {
     this.saving = true;
     const raw = this.form.getRawValue();
 
-    const amount = parseFloat(raw.amount!.replace(',', '.'));
-    if (Number.isNaN(amount) || amount <= 0) {
+    const amount = parseAmountField(raw.amount);
+    if (!Number.isFinite(amount) || amount <= 0) {
       this.saving = false;
       return;
     }
