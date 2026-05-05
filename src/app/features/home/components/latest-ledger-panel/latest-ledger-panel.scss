@@ -181,11 +181,16 @@
   padding: var(--spacing-md);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--background);
   transition: background-color var(--transition-fast);
+  cursor: pointer;
 
   &:hover {
     background: var(--muted);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring, #3b82f6);
+    outline-offset: 2px;
   }
 }
 

@@ -14,7 +14,10 @@ import { type User, UserService } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { ExpenseModal } from '../../expenses/expense-modal';
 import { IncomesModal } from '../../incomes/incomes-modal';
-import { LatestLedgerPanel } from '../components/latest-ledger-panel/latest-ledger-panel';
+import {
+  LatestLedgerPanel,
+  type LedgerRowEditEvent,
+} from '../components/latest-ledger-panel/latest-ledger-panel';
 
 @Component({
   selector: 'app-home',
@@ -184,5 +187,26 @@ export class Home implements OnInit {
   onViewAllLedger(which: 'incomes' | 'expenses'): void {
     const path = which === 'incomes' ? ['/home', 'receitas'] : ['/home', 'despesas'];
     void this.router.navigate(path);
+  }
+
+  onLedgerRowEdit(event: LedgerRowEditEvent): void {
+    if (event.kind === 'income') {
+      const ref = this.modalService.open(IncomesModal, { income: event.row });
+      ref.afterClosed().subscribe((saved) => {
+        if (saved) {
+          this.getAllIncomes();
+          this.loadDashboard();
+        }
+      });
+      return;
+    }
+
+    const ref = this.modalService.open(ExpenseModal, { expense: event.row });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) {
+        this.getAllExpenses();
+        this.loadDashboard();
+      }
+    });
   }
 }

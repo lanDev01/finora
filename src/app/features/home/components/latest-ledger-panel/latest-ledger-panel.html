@@ -93,7 +93,13 @@
         } @else {
           <ul class="tx-list">
             @for (item of displayedIncomes(); track item.id) {
-              <li class="tx-row">
+              <li
+                class="tx-row"
+                tabindex="0"
+                (click)="onIncomeRowClick(item)"
+                (keydown)="onLedgerRowKeydown($event, 'income', item)"
+                [attr.aria-label]="'Editar receita: ' + item.description"
+              >
                 <div
                   class="tx-icon"
                   [style.background]="item.category.color ? item.category.color + '22' : undefined"
@@ -173,7 +179,13 @@
         } @else {
           <ul class="tx-list">
             @for (item of displayedExpenses(); track item.id) {
-              <li class="tx-row">
+              <li
+                class="tx-row"
+                tabindex="0"
+                (click)="onExpenseRowClick(item)"
+                (keydown)="onLedgerRowKeydown($event, 'expense', item)"
+                [attr.aria-label]="'Editar despesa: ' + item.description"
+              >
                 <div
                   class="tx-icon"
                   [style.background]="item.category.color ? item.category.color + '22' : undefined"

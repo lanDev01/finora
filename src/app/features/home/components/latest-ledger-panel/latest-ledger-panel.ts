@@ -17,6 +17,11 @@ import {
 
 const LIST_LIMIT = 5;
 
+/** Clique na linha do ledger para abrir edição na home */
+export type LedgerRowEditEvent =
+  | { kind: 'income'; row: Income }
+  | { kind: 'expense'; row: Expense };
+
 function amountToNumber(value: unknown): number {
   if (typeof value === 'number' && !Number.isNaN(value)) return value;
   if (typeof value === 'string') return parseFloat(value.replace(',', '.')) || 0;
@@ -36,6 +41,7 @@ export class LatestLedgerPanel {
   expensesLoading = input(false);
 
   viewAll = output<'incomes' | 'expenses'>();
+  rowEdit = output<LedgerRowEditEvent>();
 
   protected readonly searchIcon = Search;
   protected readonly filterIcon = Filter;
@@ -113,6 +119,28 @@ export class LatestLedgerPanel {
 
   protected emitViewAll(): void {
     this.viewAll.emit(this.activeTab());
+  }
+
+  protected onIncomeRowClick(item: Income): void {
+    this.rowEdit.emit({ kind: 'income', row: item });
+  }
+
+  protected onExpenseRowClick(item: Expense): void {
+    this.rowEdit.emit({ kind: 'expense', row: item });
+  }
+
+  protected onLedgerRowKeydown(
+    event: KeyboardEvent,
+    kind: 'income' | 'expense',
+    item: Income | Expense,
+  ): void {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    if (kind === 'income') {
+      this.rowEdit.emit({ kind: 'income', row: item as Income });
+    } else {
+      this.rowEdit.emit({ kind: 'expense', row: item as Expense });
+    }
   }
 
   protected readonly categoryLucideIcon = categoryLucideIcon;
