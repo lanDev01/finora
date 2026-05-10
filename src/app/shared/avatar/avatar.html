@@ -1,9 +1,10 @@
-@if (hasImage()) {
+@if (showImage()) {
   <img
     class="avatar-image"
-    [src]="avatarUrl()"
+    [src]="avatarUrl()!"
+    referrerpolicy="no-referrer"
     [alt]="name() ?? 'Avatar do usuário'"
-    (error)="hasImage() ? null : null"
+    (error)="onImageError()"
   />
 } @else {
   <span class="avatar-initials" [attr.aria-label]="'Avatar de ' + (name() ?? 'usuário')">

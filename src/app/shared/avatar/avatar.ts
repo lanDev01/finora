@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 
 @Component({
   selector: 'app-avatar',
@@ -22,11 +30,25 @@ export class Avatar {
   /** Size variant */
   size = input<'sm' | 'md' | 'lg'>('md');
 
+  /** True after the current URL fails to load (broken image). */
+  private readonly imageFailed = signal(false);
+
+  constructor() {
+    effect(() => {
+      this.avatarUrl();
+      untracked(() => this.imageFailed.set(false));
+    });
+  }
+
   /** Computed initials from the user's name */
   readonly initials = computed(() => this.getInitials(this.name()));
 
-  /** Whether to show avatar image or initials */
-  readonly hasImage = computed(() => !!this.avatarUrl());
+  /** Show photo only when we have a URL and the image has not failed to load. */
+  readonly showImage = computed(() => !!this.avatarUrl() && !this.imageFailed());
+
+  onImageError(): void {
+    this.imageFailed.set(true);
+  }
 
   /**
    * Generates initials from a user's name.
