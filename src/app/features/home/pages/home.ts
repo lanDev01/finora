@@ -2,15 +2,19 @@ import { SummaryCard, type SummaryCardData } from '@/components/summary-card/sum
 import { AnalyticsService, type DashboardSummary } from '@/core/services/analytics.service';
 import { type Expense, ExpenseService } from '@/core/services/expense.service';
 import { type Income, IncomeService } from '@/core/services/income.service';
+import { UserService } from '@/core/services/user.service';
+import { SpendingGoalFlowService } from '@/features/spending-goal/spending-goal-flow.service';
+import { SpendingGoalProgress } from '@/features/home/components/spending-goal-progress/spending-goal-progress';
+import { currentMonthLabel } from '@/shared/expense-goal';
 import { Header } from '@/layout/header/header';
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, type OnInit, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonDropdown } from '@ui/button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
 import { map, type Observable } from 'rxjs';
-import { type User, UserService } from '../../../core/services/user.service';
+import { type User } from '../../../core/services/user.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { ExpenseModal } from '../../expenses/expense-modal';
 import { IncomesModal } from '../../incomes/incomes-modal';
@@ -21,7 +25,7 @@ import {
 
 @Component({
   selector: 'app-home',
-  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, LatestLedgerPanel],
+  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, LatestLedgerPanel, SpendingGoalProgress],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -33,6 +37,7 @@ export class Home implements OnInit {
   private expenseService = inject(ExpenseService);
   private incomeService = inject(IncomeService);
   private analyticsService = inject(AnalyticsService);
+  private spendingGoalFlow = inject(SpendingGoalFlowService);
 
   private readonly brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -47,27 +52,39 @@ export class Home implements OnInit {
   expensesLoading = signal(true);
 
   cards = signal<SummaryCardData[]>(this.dashboardToCardsPlaceholder());
+  dashboardLoading = signal(true);
+  dashboardSummary = signal<DashboardSummary | null>(null);
+
+  readonly monthlyExpenseGoal = computed(
+    () => this.userService.currentUser()?.monthlyExpenseGoal ?? null,
+  );
+
+  readonly expenseTotal = computed(() => this.dashboardSummary()?.expenseTotal ?? 0);
+
+  readonly currentMonthLabel = currentMonthLabel();
 
   ngOnInit(): void {
-    if (!this.userService.currentUser()) {
-      const token = localStorage.getItem('access_token');
-
-      if (!token) {
-        this.router.navigate(['/auth/sign-in']);
-        return;
-      }
-
-      this.userService.loadProfile().subscribe({
-        error: () => {
-          localStorage.removeItem('access_token');
-          this.router.navigate(['/auth/sign-in']);
-        },
-      });
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/auth/sign-in']);
+      return;
     }
+
+    this.userService.loadProfile().subscribe({
+      next: () => this.afterProfileLoaded(),
+      error: () => {
+        localStorage.removeItem('access_token');
+        this.router.navigate(['/auth/sign-in']);
+      },
+    });
 
     this.getAllIncomes();
     this.getAllExpenses();
     this.loadDashboard();
+  }
+
+  private afterProfileLoaded(): void {
+    this.spendingGoalFlow.maybeShowMonthlyPrompt();
   }
 
   private formatPct(n: number): string {
@@ -103,7 +120,6 @@ export class Home implements OnInit {
     ];
   }
 
-  /** Placeholder até o GET /analytics/dashboard responder */
   private dashboardToCardsPlaceholder(): SummaryCardData[] {
     const dash = '—';
     return [
@@ -133,11 +149,16 @@ export class Home implements OnInit {
   }
 
   loadDashboard(): void {
+    this.dashboardLoading.set(true);
     const now = new Date();
     this.analyticsService.getDashboard({ month: now.getMonth() + 1, year: now.getFullYear() }).subscribe({
-      next: (d) => this.cards.set(this.dashboardToCards(d)),
+      next: (d) => {
+        this.dashboardSummary.set(d);
+        this.cards.set(this.dashboardToCards(d));
+        this.dashboardLoading.set(false);
+      },
       error: () => {
-        /* mantém placeholder em falha */
+        this.dashboardLoading.set(false);
       },
     });
   }
@@ -181,6 +202,13 @@ export class Home implements OnInit {
         this.getAllExpenses();
         this.loadDashboard();
       }
+    });
+  }
+
+  openSpendingGoalModal(): void {
+    const ref = this.spendingGoalFlow.openSpendingGoalModal();
+    ref.afterClosed().subscribe((user) => {
+      if (user) this.loadDashboard();
     });
   }
 

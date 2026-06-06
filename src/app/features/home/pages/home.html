@@ -33,6 +33,14 @@
     }
   </div>
 
+  <app-spending-goal-progress
+    [goal]="monthlyExpenseGoal()"
+    [spent]="expenseTotal()"
+    [monthLabel]="currentMonthLabel"
+    [loading]="dashboardLoading()"
+    (defineGoal)="openSpendingGoalModal()"
+  />
+
   <app-latest-ledger-panel
     [incomes]="incomes()"
     [expenses]="expenses()"

@@ -1,0 +1,132 @@
+.goal-progress {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.goal-progress--loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+}
+
+.skeleton-title {
+  height: 1.25rem;
+  width: 40%;
+}
+
+.skeleton-bar {
+  height: 0.625rem;
+  width: 100%;
+}
+
+.goal-progress--empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.goal-empty-content {
+  flex: 1;
+  min-width: 200px;
+}
+
+.goal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.goal-title {
+  margin: 0 0 0.25rem;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.goal-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--foreground-muted);
+}
+
+.goal-edit-link,
+.goal-cta {
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.goal-cta {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background-subtle);
+
+  &:hover {
+    text-decoration: none;
+    background: var(--muted);
+  }
+}
+
+.goal-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--foreground-muted);
+}
+
+.goal-bar-track {
+  height: 0.625rem;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  overflow: hidden;
+  margin-bottom: var(--spacing-sm);
+}
+
+.goal-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: #22c55e;
+  transition: width 0.35s ease;
+}
+
+.goal-progress--over .goal-bar-fill {
+  background: var(--destructive, #ef4444);
+  width: 100% !important;
+}
+
+.goal-label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.goal-progress--over .goal-label {
+  color: var(--destructive, #ef4444);
+}
