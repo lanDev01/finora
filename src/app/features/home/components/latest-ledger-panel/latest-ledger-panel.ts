@@ -6,6 +6,7 @@ import {
 } from '@/features/categories/category-icon-options';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
+import { LEDGER_DATE_PIPE_TIMEZONE } from '@/shared/ledger-date';
 import {
   ArrowRight,
   Filter,
@@ -45,6 +46,7 @@ export class LatestLedgerPanel {
 
   protected readonly searchIcon = Search;
   protected readonly filterIcon = Filter;
+  protected readonly ledgerDateTimezone = LEDGER_DATE_PIPE_TIMEZONE;
   protected readonly arrowRightIcon = ArrowRight;
   protected readonly trendingUpIcon = TrendingUp;
   protected readonly trendingDownIcon = TrendingDown;

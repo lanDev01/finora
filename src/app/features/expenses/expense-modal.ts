@@ -2,9 +2,9 @@ import { ToastService } from '@/shared/toast/toast.service';
 import {
   formatPtBrCurrency,
   ledgerAmountToNumber,
-  toDateInputValue,
   toDuplicateFormValues,
 } from '@/shared/ledger-duplicate';
+import { toDateInputValue, todayDateInputValue } from '@/shared/ledger-date';
 import { Component, computed, inject, input, type OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '@ui/button/button';
@@ -68,7 +68,7 @@ export class ExpenseModal implements OnInit {
   form = this.fb.group({
     description: ['', [Validators.required]],
     amount: ['', [Validators.required]],
-    date: [new Date().toISOString().split('T')[0], [Validators.required]],
+    date: [todayDateInputValue(), [Validators.required]],
     categoryId: ['', [Validators.required]],
     notes: [''],
   });

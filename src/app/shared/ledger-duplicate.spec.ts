@@ -1,13 +1,24 @@
+import { toDateInputValue, todayDateInputValue as localToday } from './ledger-date';
 import {
   formatPtBrCurrency,
   ledgerAmountToNumber,
   toDuplicateFormValues,
-  todayDateInputValue,
 } from './ledger-duplicate';
+
+describe('ledger-date', () => {
+  it('todayDateInputValue uses local calendar date', () => {
+    const fixedNow = new Date(2026, 5, 6, 23, 30, 0);
+    expect(localToday(fixedNow)).toBe('2026-06-06');
+  });
+
+  it('toDateInputValue extracts calendar date from UTC ISO', () => {
+    expect(toDateInputValue('2026-06-06T00:00:00.000Z')).toBe('2026-06-06');
+  });
+});
 
 describe('ledger-duplicate', () => {
   describe('toDuplicateFormValues', () => {
-    const fixedNow = new Date('2026-06-06T15:00:00.000Z');
+    const fixedNow = new Date(2026, 5, 6, 15, 0, 0);
 
     it('copies description and notes', () => {
       const result = toDuplicateFormValues(
@@ -42,7 +53,7 @@ describe('ledger-duplicate', () => {
         fixedNow,
       );
 
-      expect(result.date).toBe(todayDateInputValue(fixedNow));
+      expect(result.date).toBe(localToday(fixedNow));
     });
 
     it('keeps categoryId when available', () => {

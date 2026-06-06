@@ -118,7 +118,7 @@
                 </div>
                 <div class="tx-main">
                   <p class="tx-title">{{ item.description }}</p>
-                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : ledgerDateTimezone : 'pt-BR' }}</p>
                 </div>
                 <div class="tx-side">
                   <p class="tx-amount tx-amount--income">
@@ -204,7 +204,7 @@
                 </div>
                 <div class="tx-main">
                   <p class="tx-title">{{ item.description }}</p>
-                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : undefined : 'pt-BR' }}</p>
+                  <p class="tx-meta">{{ item.date | date: 'd MMM y' : ledgerDateTimezone : 'pt-BR' }}</p>
                 </div>
                 <div class="tx-side">
                   <p class="tx-amount tx-amount--expense">

@@ -33,7 +33,7 @@
                 @if (col.isCurrency) {
                   {{ $any(getCellValue(row, col)) | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                 } @else if (col.isDate) {
-                  {{ $any(getCellValue(row, col)) | date: 'dd/MM/yyyy' : '' : 'pt-BR' }}
+                  {{ $any(getCellValue(row, col)) | date: 'dd/MM/yyyy' : ledgerDateTimezone : 'pt-BR' }}
                 } @else if (col.isBadge) {
                   <span
                     class="badge"

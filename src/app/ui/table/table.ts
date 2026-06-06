@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { LucideAngularModule, MoreVertical } from 'lucide-angular';
+import { LEDGER_DATE_PIPE_TIMEZONE } from '@/shared/ledger-date';
 import { ButtonDropdown } from '../button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '../button/button.token';
 
@@ -53,6 +54,7 @@ export class Table {
   actionClick = output<{ action: string; row: Record<string, unknown> }>();
 
   protected readonly moreIcon = MoreVertical;
+  protected readonly ledgerDateTimezone = LEDGER_DATE_PIPE_TIMEZONE;
 
   trackByIndex(index: number): number {
     return index;
