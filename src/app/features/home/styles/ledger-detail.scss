@@ -15,6 +15,13 @@ main {
   margin-bottom: var(--spacing-lg);
 }
 
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: auto;
+}
+
 .page-back {
   font-size: var(--font-size-sm);
   font-weight: 500;
@@ -40,9 +47,40 @@ main {
 
 .ledger-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  padding-bottom: var(--spacing-md);
   border-bottom: 1px solid var(--border);
+}
+
+.ledger-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-end;
+  min-width: 160px;
+
+  label {
+    font-size: 0.8125rem;
+    color: var(--foreground-muted);
+  }
+
+  input[type='month'] {
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font: inherit;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent);
+    }
+  }
 }
 
 .ledger-title {

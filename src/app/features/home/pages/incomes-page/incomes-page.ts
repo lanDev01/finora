@@ -1,5 +1,10 @@
 import { type Income, IncomeService } from '@/core/services/income.service';
 import { Header } from '@/layout/header/header';
+import {
+  defaultLedgerPeriodInput,
+  ledgerPeriodLabel,
+  partsFromLedgerPeriod,
+} from '@/shared/ledger-period';
 import { ModalService } from '@/shared/modal/modal.service';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
@@ -9,13 +14,14 @@ import {
   type TableColumn,
   type TableRowAction,
 } from '@ui/table/table';
-import { Component, inject, type OnInit, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LucideAngularModule, RefreshCw } from 'lucide-angular';
 import { IncomesModal } from '../../../incomes/incomes-modal';
 
 @Component({
   selector: 'app-incomes-page',
-  imports: [Header, RouterLink, Button, Table],
+  imports: [Header, RouterLink, Button, Table, LucideAngularModule],
   templateUrl: './incomes-page.html',
   styleUrl: './incomes-page.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -26,6 +32,9 @@ export class IncomesPage implements OnInit {
 
   incomes = signal<Income[]>([]);
   incomesLoading = signal(true);
+  periodInput = signal(defaultLedgerPeriodInput());
+
+  readonly periodLabel = computed(() => ledgerPeriodLabel(this.periodInput()));
 
   incomesRows = (): Record<string, unknown>[] =>
     this.incomes() as unknown as Record<string, unknown>[];
@@ -38,15 +47,27 @@ export class IncomesPage implements OnInit {
   ];
 
   readonly ledgerRowActions: TableRowAction[] = LEDGER_TABLE_ROW_ACTIONS;
+  protected readonly refreshIcon = RefreshCw;
 
   ngOnInit(): void {
-    this.getAllIncomes();
+    this.loadIncomes();
   }
 
-  getAllIncomes(): void {
+  onPeriodChange(value: string): void {
+    this.periodInput.set(value);
+    this.loadIncomes();
+  }
+
+  reloadIncomes(): void {
+    this.loadIncomes();
+  }
+
+  loadIncomes(): void {
+    const parts = partsFromLedgerPeriod(this.periodInput());
+    if (!parts) return;
+
     this.incomesLoading.set(true);
-    const now = new Date();
-    this.incomeService.findAll({ month: now.getMonth() + 1, year: now.getFullYear() }).subscribe({
+    this.incomeService.findAll({ month: parts.month, year: parts.year }).subscribe({
       next: (data) => {
         this.incomes.set(data);
         this.incomesLoading.set(false);
@@ -58,7 +79,7 @@ export class IncomesPage implements OnInit {
   openNewIncomeModal(): void {
     const ref = this.modalService.open(IncomesModal);
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllIncomes();
+      if (saved) this.loadIncomes();
     });
   }
 
@@ -69,7 +90,7 @@ export class IncomesPage implements OnInit {
 
     const ref = this.modalService.open(IncomesModal, { income });
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllIncomes();
+      if (saved) this.loadIncomes();
     });
   }
 
@@ -80,7 +101,7 @@ export class IncomesPage implements OnInit {
 
     const ref = this.modalService.open(IncomesModal, { duplicateFrom: income });
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllIncomes();
+      if (saved) this.loadIncomes();
     });
   }
 
@@ -101,11 +122,7 @@ export class IncomesPage implements OnInit {
   private deleteIncome(row: Record<string, unknown>): void {
     const id = row['id'] as string;
     this.incomeService.remove(id).subscribe({
-      next: () => this.getAllIncomes(),
+      next: () => this.loadIncomes(),
     });
-  }
-
-  get currentMonthLabel(): string {
-    return new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   }
 }

@@ -1,5 +1,10 @@
 import { type Expense, ExpenseService } from '@/core/services/expense.service';
 import { Header } from '@/layout/header/header';
+import {
+  defaultLedgerPeriodInput,
+  ledgerPeriodLabel,
+  partsFromLedgerPeriod,
+} from '@/shared/ledger-period';
 import { ModalService } from '@/shared/modal/modal.service';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
@@ -9,13 +14,14 @@ import {
   type TableColumn,
   type TableRowAction,
 } from '@ui/table/table';
-import { Component, inject, type OnInit, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LucideAngularModule, RefreshCw } from 'lucide-angular';
 import { ExpenseModal } from '../../../expenses/expense-modal';
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [Header, RouterLink, Button, Table],
+  imports: [Header, RouterLink, Button, Table, LucideAngularModule],
   templateUrl: './expenses-page.html',
   styleUrl: './expenses-page.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -26,6 +32,9 @@ export class ExpensesPage implements OnInit {
 
   expenses = signal<Expense[]>([]);
   expensesLoading = signal(true);
+  periodInput = signal(defaultLedgerPeriodInput());
+
+  readonly periodLabel = computed(() => ledgerPeriodLabel(this.periodInput()));
 
   expensesRows = (): Record<string, unknown>[] =>
     this.expenses() as unknown as Record<string, unknown>[];
@@ -38,15 +47,27 @@ export class ExpensesPage implements OnInit {
   ];
 
   readonly ledgerRowActions: TableRowAction[] = LEDGER_TABLE_ROW_ACTIONS;
+  protected readonly refreshIcon = RefreshCw;
 
   ngOnInit(): void {
-    this.getAllExpenses();
+    this.loadExpenses();
   }
 
-  getAllExpenses(): void {
+  onPeriodChange(value: string): void {
+    this.periodInput.set(value);
+    this.loadExpenses();
+  }
+
+  reloadExpenses(): void {
+    this.loadExpenses();
+  }
+
+  loadExpenses(): void {
+    const parts = partsFromLedgerPeriod(this.periodInput());
+    if (!parts) return;
+
     this.expensesLoading.set(true);
-    const now = new Date();
-    this.expenseService.findAll({ month: now.getMonth() + 1, year: now.getFullYear() }).subscribe({
+    this.expenseService.findAll({ month: parts.month, year: parts.year }).subscribe({
       next: (data) => {
         this.expenses.set(data);
         this.expensesLoading.set(false);
@@ -58,7 +79,7 @@ export class ExpensesPage implements OnInit {
   openNewExpenseModal(): void {
     const ref = this.modalService.open(ExpenseModal);
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllExpenses();
+      if (saved) this.loadExpenses();
     });
   }
 
@@ -69,7 +90,7 @@ export class ExpensesPage implements OnInit {
 
     const ref = this.modalService.open(ExpenseModal, { expense });
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllExpenses();
+      if (saved) this.loadExpenses();
     });
   }
 
@@ -80,7 +101,7 @@ export class ExpensesPage implements OnInit {
 
     const ref = this.modalService.open(ExpenseModal, { duplicateFrom: expense });
     ref.afterClosed().subscribe((saved) => {
-      if (saved) this.getAllExpenses();
+      if (saved) this.loadExpenses();
     });
   }
 
@@ -101,11 +122,7 @@ export class ExpensesPage implements OnInit {
   private deleteExpense(row: Record<string, unknown>): void {
     const id = row['id'] as string;
     this.expenseService.remove(id).subscribe({
-      next: () => this.getAllExpenses(),
+      next: () => this.loadExpenses(),
     });
-  }
-
-  get currentMonthLabel(): string {
-    return new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   }
 }

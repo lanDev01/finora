@@ -3,14 +3,37 @@
 <main>
   <div class="page-toolbar">
     <a routerLink="/home" class="page-back">← Voltar ao início</a>
-    <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+
+    <div class="page-actions">
+      <app-button
+        type="button"
+        variant="outline"
+        [loading]="expensesLoading()"
+        aria-label="Recarregar despesas"
+        (clicked)="reloadExpenses()"
+      >
+        <lucide-icon [img]="refreshIcon" [size]="18" aria-hidden="true" />
+      </app-button>
+
+      <app-button type="button" (clicked)="openNewExpenseModal()">Nova despesa</app-button>
+    </div>
   </div>
 
   <section class="ledger-section">
     <div class="ledger-header">
       <div>
         <h1 class="ledger-title">Despesas</h1>
-        <p class="ledger-subtitle">{{ currentMonthLabel }}</p>
+        <p class="ledger-subtitle">{{ periodLabel() }}</p>
+      </div>
+
+      <div class="ledger-filter">
+        <label for="expenses-period">Período</label>
+        <input
+          id="expenses-period"
+          type="month"
+          [value]="periodInput()"
+          (change)="onPeriodChange($any($event.target).value)"
+        />
       </div>
     </div>
 
@@ -19,7 +42,7 @@
       [rows]="expensesRows()"
       [loading]="expensesLoading()"
       [rowActions]="ledgerRowActions"
-      emptyMessage="Nenhuma despesa registrada neste mês."
+      emptyMessage="Nenhuma despesa registrada neste período."
       (actionClick)="onExpenseTableAction($event)"
     />
   </section>
