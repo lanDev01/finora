@@ -1,0 +1,47 @@
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  min-height: 220px;
+  padding: var(--spacing-lg);
+  animation: chart-empty-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes chart-empty-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-empty__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-xl);
+  background: color-mix(in oklab, var(--foreground-muted) 12%, transparent);
+  color: color-mix(in oklab, var(--foreground-muted) 85%, var(--primary));
+}
+
+.chart-empty__icon {
+  opacity: 0.9;
+}
+
+.chart-empty__message {
+  margin: 0;
+  max-width: 16rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--foreground-muted);
+}

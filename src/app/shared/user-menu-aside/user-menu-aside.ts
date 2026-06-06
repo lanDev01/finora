@@ -7,9 +7,10 @@ import { ModalService } from '@/shared/modal/modal.service';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  BarChart3,
   ChevronLeft,
   ChevronRight,
-  LayoutDashboard,
+  Home,
   LogOut,
   LucideAngularModule,
   RectangleEllipsis,
@@ -34,7 +35,8 @@ export class UserMenuAside {
   /** Injected by ModalService */
   __modalRef?: ModalRef;
 
-  protected readonly dashboardIcon = LayoutDashboard;
+  protected readonly homeIcon = Home;
+  protected readonly dashboardIcon = BarChart3;
   protected readonly rectangleEllipsisIcon = RectangleEllipsis;
   protected readonly userPenIcon = UserPen;
   protected readonly settingsIcon = Settings;

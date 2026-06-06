@@ -12,16 +12,71 @@ export interface DashboardSummary {
   balancePercentChange: number;
 }
 
+export interface CategoryBreakdownItem {
+  name: string;
+  color: string;
+  total: number;
+}
+
+export interface EvolutionPoint {
+  month: string;
+  income: number;
+  expense: number;
+  balance: number;
+}
+
+export interface PeriodTotals {
+  month: string;
+  incomeTotal: number;
+  expenseTotal: number;
+  balance: number;
+}
+
+export interface PeriodComparison {
+  current: PeriodTotals & { expensesByCategory: CategoryBreakdownItem[] };
+  compare: PeriodTotals & { expensesByCategory: CategoryBreakdownItem[] };
+}
+
+export type CategoryLedgerType = 'EXPENSE' | 'INCOME';
+
 @Injectable({ providedIn: 'root' })
 export class AnalyticsService {
   private http = inject(HttpClient);
+  private base = `${environment.apiUrl}/analytics`;
 
-  /** Totais do mês (receitas, despesas, saldo) e variação % vs mês anterior */
-  getDashboard(params?: { month?: number; year?: number }): Observable<DashboardSummary> {
+  private query(params: Record<string, string | number | undefined>): string {
     const q = new URLSearchParams();
-    if (params?.month != null) q.set('month', String(params.month));
-    if (params?.year != null) q.set('year', String(params.year));
-    const suffix = q.toString() ? `?${q.toString()}` : '';
-    return this.http.get<DashboardSummary>(`${environment.apiUrl}/analytics/dashboard${suffix}`);
+    for (const [key, value] of Object.entries(params)) {
+      if (value != null && value !== '') q.set(key, String(value));
+    }
+    const s = q.toString();
+    return s ? `?${s}` : '';
+  }
+
+  getDashboard(params?: { month?: number; year?: number }): Observable<DashboardSummary> {
+    return this.http.get<DashboardSummary>(`${this.base}/dashboard${this.query(params ?? {})}`);
+  }
+
+  getEvolution(months = 12): Observable<EvolutionPoint[]> {
+    return this.http.get<EvolutionPoint[]>(`${this.base}/evolution${this.query({ months })}`);
+  }
+
+  getCompare(params: {
+    month: number;
+    year: number;
+    compareMonth?: number;
+    compareYear?: number;
+  }): Observable<PeriodComparison> {
+    return this.http.get<PeriodComparison>(`${this.base}/compare${this.query(params)}`);
+  }
+
+  getByCategory(params: {
+    month: number;
+    year: number;
+    type?: CategoryLedgerType;
+  }): Observable<CategoryBreakdownItem[]> {
+    return this.http.get<CategoryBreakdownItem[]>(
+      `${this.base}/by-category${this.query(params)}`,
+    );
   }
 }

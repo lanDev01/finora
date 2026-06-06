@@ -10,6 +10,7 @@ import { Header } from '@/layout/header/header';
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Button } from '@ui/button/button';
 import { ButtonDropdown } from '@ui/button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import { TrendingDown, TrendingUp, Wallet } from 'lucide-angular';
@@ -25,7 +26,7 @@ import {
 
 @Component({
   selector: 'app-home',
-  imports: [Header, ButtonDropdown, SummaryCard, AsyncPipe, LatestLedgerPanel, SpendingGoalProgress],
+  imports: [Header, Button, ButtonDropdown, SummaryCard, AsyncPipe, LatestLedgerPanel, SpendingGoalProgress],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   providers: [{ provide: BUTTON_CONFIG, useValue: { size: 'md', variant: 'primary' } }],
@@ -210,6 +211,10 @@ export class Home implements OnInit {
     ref.afterClosed().subscribe((user) => {
       if (user) this.loadDashboard();
     });
+  }
+
+  goDashboard(): void {
+    void this.router.navigate(['/home', 'dashboard']);
   }
 
   onViewAllLedger(which: 'incomes' | 'expenses'): void {

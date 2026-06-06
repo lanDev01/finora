@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 export type Theme = 'light' | 'dark';
 
@@ -7,9 +7,17 @@ export type Theme = 'light' | 'dark';
 })
 export class ThemeService {
   private readonly STORAGE_KEY = 'theme';
+  private readonly themeSignal = signal<Theme>(this.readThemeFromDom());
+
+  /** Lido pelos gráficos para reagir à troca de tema. */
+  readonly theme = this.themeSignal.asReadonly();
 
   constructor() {
     this.initializeTheme();
+  }
+
+  private readThemeFromDom(): Theme {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }
 
   private initializeTheme(): void {
@@ -50,6 +58,7 @@ export class ThemeService {
     document.documentElement.setAttribute('data-theme', theme);
 
     localStorage.setItem(this.STORAGE_KEY, theme);
+    this.themeSignal.set(theme);
   }
 
   toggleTheme(): void {

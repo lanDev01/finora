@@ -1,0 +1,139 @@
+<app-header />
+
+<main class="dashboard" [class.is-loading]="loading()">
+  <div class="dashboard-intro">
+    <div>
+      <h2>Dashboard</h2>
+      <p>Visão geral e evolução das suas finanças</p>
+    </div>
+
+    <a routerLink="/home" class="dashboard-back">
+      <lucide-icon [img]="arrowLeftIcon" [size]="18" aria-hidden="true" />
+      <span>Voltar ao início</span>
+    </a>
+  </div>
+
+  <section class="dashboard-filters" aria-label="Filtros de período">
+    <div class="filter-field">
+      <label for="period-month">Período</label>
+      <input
+        id="period-month"
+        type="month"
+        [ngModel]="periodInput()"
+        (ngModelChange)="onPeriodChange($event)"
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="compare-mode">Comparar com</label>
+      <select
+        id="compare-mode"
+        [ngModel]="compareMode()"
+        (ngModelChange)="onCompareModeChange($event)"
+      >
+        <option value="previous">Mês anterior</option>
+        <option value="custom">Outro período</option>
+        <option value="none">Sem comparação</option>
+      </select>
+    </div>
+
+    @if (compareMode() === 'custom') {
+      <div class="filter-field">
+        <label for="compare-month">Período de comparação</label>
+        <input
+          id="compare-month"
+          type="month"
+          [ngModel]="comparePeriodInput()"
+          (ngModelChange)="onComparePeriodChange($event)"
+        />
+      </div>
+    }
+  </section>
+
+  <div class="cards">
+    @for (card of cards(); track card.title) {
+      <app-summary-card
+        [title]="card.title"
+        [value]="card.value"
+        [icon]="card.icon"
+        [change]="card.change"
+        [type]="card.type"
+        [highlight]="card.highlight"
+      />
+    }
+  </div>
+
+  <div class="charts-grid">
+    <article class="chart-card chart-card--wide">
+      <header>
+        <h3>Evolução financeira</h3>
+        <p>Últimos 12 meses — receitas, despesas e saldo</p>
+      </header>
+      <div class="chart-wrap chart-wrap--tall">
+        <app-chart [config]="evolutionChart()" ariaLabel="Gráfico de evolução financeira" />
+      </div>
+    </article>
+
+    @if (showComparison() && comparisonChart(); as cmpChart) {
+      <article class="chart-card">
+        <header>
+          <h3>Comparativo</h3>
+          <p>
+            {{ periodLabel() }}
+            @if (compareLabel(); as cl) {
+              <span> vs {{ cl }}</span>
+            }
+          </p>
+        </header>
+        <div class="chart-wrap">
+          <app-chart [config]="cmpChart" ariaLabel="Gráfico comparativo entre períodos" />
+        </div>
+
+        @if (comparison(); as cmp) {
+          <ul class="compare-deltas">
+            <li>
+              <span>Receitas</span>
+              <strong [class.positive]="cmp.current.incomeTotal >= cmp.compare.incomeTotal">
+                {{ formatPctChange(pctChange(cmp.current.incomeTotal, cmp.compare.incomeTotal)) }}
+              </strong>
+            </li>
+            <li>
+              <span>Despesas</span>
+              <strong [class.negative]="cmp.current.expenseTotal > cmp.compare.expenseTotal">
+                {{ formatPctChange(pctChange(cmp.current.expenseTotal, cmp.compare.expenseTotal)) }}
+              </strong>
+            </li>
+            <li>
+              <span>Saldo</span>
+              <strong [class.positive]="cmp.current.balance >= cmp.compare.balance">
+                {{ formatPctChange(pctChange(cmp.current.balance, cmp.compare.balance)) }}
+              </strong>
+            </li>
+          </ul>
+        }
+      </article>
+    }
+
+    @if (expenseCategoryChart(); as catChart) {
+      <article class="chart-card">
+        <header>
+          <h3>Despesas por categoria</h3>
+          <p>{{ periodLabel() }}</p>
+        </header>
+        <div class="chart-wrap">
+          <app-chart [config]="catChart" ariaLabel="Gráfico de despesas por categoria" />
+        </div>
+      </article>
+    } @else if (!loading()) {
+      <article class="chart-card">
+        <header>
+          <h3>Despesas por categoria</h3>
+          <p>{{ periodLabel() }}</p>
+        </header>
+        <div class="chart-wrap">
+          <app-chart-empty-state message="Nenhuma despesa neste período." />
+        </div>
+      </article>
+    }
+  </div>
+</main>
