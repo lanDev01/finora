@@ -14,6 +14,7 @@ import {
   LucideAngularModule,
   RectangleEllipsis,
   Settings,
+  Tags,
   TrendingDown,
   TrendingUp,
   UserPen,
@@ -43,6 +44,7 @@ export class UserMenuAside {
   protected readonly chevronRightIcon = ChevronRight;
   protected readonly trendingUpIcon = TrendingUp;
   protected readonly trendingDownIcon = TrendingDown;
+  protected readonly tagsIcon = Tags;
 
   showSettings = false;
 

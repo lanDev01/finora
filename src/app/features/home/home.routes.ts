@@ -17,4 +17,10 @@ export const HOME_ROUTES: Routes = [
     loadComponent: () => import('./pages/expenses-page/expenses-page').then((c) => c.ExpensesPage),
     canActivate: [authGuard],
   },
+  {
+    path: 'categorias',
+    loadComponent: () =>
+      import('./pages/categories-page/categories-page').then((c) => c.CategoriesPage),
+    canActivate: [authGuard],
+  },
 ];

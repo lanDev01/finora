@@ -93,10 +93,10 @@ export class ExpenseModal implements OnInit {
   }
 
   openCreateCategory(): void {
-    const ref = this.modalService.open(CreateCategoryModal);
+    const ref = this.modalService.open(CreateCategoryModal, { defaultType: 'EXPENSE' });
     ref.afterClosed().subscribe((newCategory) => {
       if (newCategory) {
-        this.categoryService.loadCategories().subscribe((cats) => {
+        this.categoryService.loadCategories({ type: 'EXPENSE' }).subscribe((cats) => {
           this.categories.set(cats);
           this.form.patchValue({ categoryId: newCategory.id });
         });
@@ -152,7 +152,7 @@ export class ExpenseModal implements OnInit {
   }
 
   private loadCategories(): void {
-    this.categoryService.loadCategories().subscribe((cats) => {
+    this.categoryService.loadCategories({ type: 'EXPENSE' }).subscribe((cats) => {
       this.categories.set(cats);
       this.patchFromExpense();
     });

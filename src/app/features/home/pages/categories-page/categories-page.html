@@ -1,0 +1,26 @@
+<app-header />
+
+<main>
+  <div class="page-toolbar">
+    <a routerLink="/home" class="page-back">← Voltar ao início</a>
+    <app-button type="button" (clicked)="openNewCategoryModal()">Nova categoria</app-button>
+  </div>
+
+  <section class="ledger-section">
+    <div class="ledger-header">
+      <div>
+        <h1 class="ledger-title">Categorias</h1>
+        <p class="ledger-subtitle">Gerencie suas categorias de despesas e receitas</p>
+      </div>
+    </div>
+
+    <app-table
+      [columns]="categoryColumns"
+      [rows]="categoriesRows()"
+      [loading]="categoriesLoading()"
+      [rowActions]="categoryRowActions"
+      emptyMessage="Nenhuma categoria cadastrada."
+      (actionClick)="onCategoryTableAction($event)"
+    />
+  </section>
+</main>

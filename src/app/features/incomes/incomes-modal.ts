@@ -89,10 +89,10 @@ export class IncomesModal implements OnInit {
   }
 
   openCreateCategory(): void {
-    const ref = this.modalService.open(CreateCategoryModal);
+    const ref = this.modalService.open(CreateCategoryModal, { defaultType: 'INCOME' });
     ref.afterClosed().subscribe((newCategory) => {
       if (newCategory) {
-        this.categoryService.loadCategories().subscribe((cats) => {
+        this.categoryService.loadCategories({ type: 'INCOME' }).subscribe((cats) => {
           this.categories.set(cats);
           this.form.patchValue({ categoryId: newCategory.id });
         });
@@ -148,7 +148,7 @@ export class IncomesModal implements OnInit {
   }
 
   private loadCategories(): void {
-    this.categoryService.loadCategories().subscribe((cats) => {
+    this.categoryService.loadCategories({ type: 'INCOME' }).subscribe((cats) => {
       this.categories.set(cats);
       this.patchFromIncome();
     });

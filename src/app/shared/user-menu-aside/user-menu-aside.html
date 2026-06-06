@@ -24,6 +24,11 @@
             <span>Despesas</span>
           </button>
 
+          <button type="button" class="menu-item" (click)="navigate(['/home', 'categorias'])">
+            <lucide-icon [img]="tagsIcon" [size]="18" />
+            <span>Categorias</span>
+          </button>
+
           <button type="button" class="menu-item" (click)="handleShowSettings()">
             <lucide-icon [img]="settingsIcon" [size]="18" />
             <span>Configurações</span>
