@@ -4,7 +4,7 @@ import { ModalService } from '@/shared/modal/modal.service';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import {
-  DEFAULT_TABLE_ROW_ACTIONS,
+  LEDGER_TABLE_ROW_ACTIONS,
   Table,
   type TableColumn,
   type TableRowAction,
@@ -37,7 +37,7 @@ export class ExpensesPage implements OnInit {
     { field: 'category', header: 'Categoria', isBadge: true },
   ];
 
-  readonly ledgerRowActions: TableRowAction[] = DEFAULT_TABLE_ROW_ACTIONS;
+  readonly ledgerRowActions: TableRowAction[] = LEDGER_TABLE_ROW_ACTIONS;
 
   ngOnInit(): void {
     this.getAllExpenses();
@@ -73,9 +73,24 @@ export class ExpensesPage implements OnInit {
     });
   }
 
+  openDuplicateExpenseModal(row: Record<string, unknown>): void {
+    const id = row['id'] as string;
+    const expense = this.expenses().find((e) => e.id === id);
+    if (!expense) return;
+
+    const ref = this.modalService.open(ExpenseModal, { duplicateFrom: expense });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) this.getAllExpenses();
+    });
+  }
+
   onExpenseTableAction(event: { action: string; row: Record<string, unknown> }): void {
     if (event.action === 'delete') {
       this.deleteExpense(event.row);
+      return;
+    }
+    if (event.action === 'duplicate') {
+      this.openDuplicateExpenseModal(event.row);
       return;
     }
     if (event.action === 'edit') {

@@ -1,4 +1,10 @@
 import { ToastService } from '@/shared/toast/toast.service';
+import {
+  formatPtBrCurrency,
+  ledgerAmountToNumber,
+  toDateInputValue,
+  toDuplicateFormValues,
+} from '@/shared/ledger-duplicate';
 import { Component, computed, inject, input, type OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Button } from '@ui/button/button';
@@ -12,32 +18,6 @@ import { Modal } from '../../shared/modal/modal';
 import { type ModalRef, ModalService } from '../../shared/modal/modal.service';
 import { parseAmountField } from '@/shared/parse-amount-field';
 import { CreateCategoryModal } from '../categories/create-category-modal';
-
-function ledgerAmountToNumber(value: unknown): number {
-  if (typeof value === 'number' && !Number.isNaN(value)) return value;
-  if (typeof value === 'string') {
-    const n = parseAmountField(value);
-    return Number.isFinite(n) ? n : 0;
-  }
-  return 0;
-}
-
-function formatPtBrCurrency(amount: number): string {
-  return new Intl.NumberFormat('pt-BR', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
-
-function toDateInputValue(isoDate: string): string {
-  const slice = isoDate.slice(0, 10);
-  if (/^\d{4}-\d{2}-\d{2}$/.test(slice)) return slice;
-  try {
-    return new Date(isoDate).toISOString().split('T')[0];
-  } catch {
-    return new Date().toISOString().split('T')[0];
-  }
-}
 
 @Component({
   selector: 'app-expense-modal',
@@ -62,16 +42,26 @@ export class ExpenseModal implements OnInit {
   /** Quando definido, o modal entra em modo edição. */
   expense = input<Expense | undefined>(undefined);
 
+  /** Pré-preenche formulário para criar cópia (sem persistir). */
+  duplicateFrom = input<Expense | undefined>(undefined);
+
   readonly plusIcon = Plus;
   readonly categories = signal<Category[]>([]);
 
-  readonly isEdit = computed(() => !!this.expense()?.id);
-  readonly headerTitle = computed(() =>
-    this.isEdit() ? 'Editar despesa' : 'Adicionar despesa',
-  );
-  readonly headerSubtitle = computed(() =>
-    this.isEdit() ? 'Atualize os dados deste gasto' : 'Registre um novo gasto',
-  );
+  readonly isDuplicate = computed(() => !!this.duplicateFrom()?.id);
+  readonly isEdit = computed(() => !!this.expense()?.id && !this.isDuplicate());
+
+  readonly headerTitle = computed(() => {
+    if (this.isEdit()) return 'Editar despesa';
+    if (this.isDuplicate()) return 'Duplicar despesa';
+    return 'Adicionar despesa';
+  });
+
+  readonly headerSubtitle = computed(() => {
+    if (this.isEdit()) return 'Atualize os dados deste gasto';
+    if (this.isDuplicate()) return 'Revise os dados e salve o novo lançamento';
+    return 'Registre um novo gasto';
+  });
 
   saving = false;
 
@@ -124,7 +114,7 @@ export class ExpenseModal implements OnInit {
       notes: raw.notes || undefined,
     };
 
-    const editing = this.expense();
+    const editing = this.isEdit() ? this.expense() : undefined;
     const req = editing?.id
       ? this.expenseService.update(editing.id, payload)
       : this.expenseService.create(payload);
@@ -154,8 +144,28 @@ export class ExpenseModal implements OnInit {
   private loadCategories(): void {
     this.categoryService.loadCategories({ type: 'EXPENSE' }).subscribe((cats) => {
       this.categories.set(cats);
-      this.patchFromExpense();
+      this.applyFormPrefill();
     });
+  }
+
+  private applyFormPrefill(): void {
+    if (this.duplicateFrom()) {
+      this.patchFromDuplicate();
+      return;
+    }
+    this.patchFromExpense();
+  }
+
+  private patchFromDuplicate(): void {
+    const source = this.duplicateFrom();
+    if (!source) return;
+
+    this.form.patchValue(
+      toDuplicateFormValues(
+        source,
+        this.categories().map((category) => category.id),
+      ),
+    );
   }
 
   private patchFromExpense(): void {

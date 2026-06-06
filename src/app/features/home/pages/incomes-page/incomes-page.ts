@@ -4,7 +4,7 @@ import { ModalService } from '@/shared/modal/modal.service';
 import { Button } from '@ui/button/button';
 import { BUTTON_CONFIG } from '@ui/button/button.token';
 import {
-  DEFAULT_TABLE_ROW_ACTIONS,
+  LEDGER_TABLE_ROW_ACTIONS,
   Table,
   type TableColumn,
   type TableRowAction,
@@ -37,7 +37,7 @@ export class IncomesPage implements OnInit {
     { field: 'category', header: 'Categoria', isBadge: true },
   ];
 
-  readonly ledgerRowActions: TableRowAction[] = DEFAULT_TABLE_ROW_ACTIONS;
+  readonly ledgerRowActions: TableRowAction[] = LEDGER_TABLE_ROW_ACTIONS;
 
   ngOnInit(): void {
     this.getAllIncomes();
@@ -73,9 +73,24 @@ export class IncomesPage implements OnInit {
     });
   }
 
+  openDuplicateIncomeModal(row: Record<string, unknown>): void {
+    const id = row['id'] as string;
+    const income = this.incomes().find((i) => i.id === id);
+    if (!income) return;
+
+    const ref = this.modalService.open(IncomesModal, { duplicateFrom: income });
+    ref.afterClosed().subscribe((saved) => {
+      if (saved) this.getAllIncomes();
+    });
+  }
+
   onIncomeTableAction(event: { action: string; row: Record<string, unknown> }): void {
     if (event.action === 'delete') {
       this.deleteIncome(event.row);
+      return;
+    }
+    if (event.action === 'duplicate') {
+      this.openDuplicateIncomeModal(event.row);
       return;
     }
     if (event.action === 'edit') {

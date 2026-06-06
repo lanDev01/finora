@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import { MoreVertical, LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, MoreVertical } from 'lucide-angular';
 import { ButtonDropdown } from '../button-dropdown/button-dropdown';
 import { BUTTON_CONFIG } from '../button/button.token';
 
@@ -25,6 +25,12 @@ export interface TableRowAction {
 }
 
 export const DEFAULT_TABLE_ROW_ACTIONS: TableRowAction[] = [
+  { id: 'edit', label: 'Editar' },
+  { id: 'delete', label: 'Excluir', danger: true },
+];
+
+export const LEDGER_TABLE_ROW_ACTIONS: TableRowAction[] = [
+  { id: 'duplicate', label: 'Duplicar' },
   { id: 'edit', label: 'Editar' },
   { id: 'delete', label: 'Excluir', danger: true },
 ];
