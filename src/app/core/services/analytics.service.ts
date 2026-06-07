@@ -7,6 +7,10 @@ export interface DashboardSummary {
   incomeTotal: number;
   expenseTotal: number;
   balance: number;
+  previousIncomeTotal: number;
+  previousExpenseTotal: number;
+  previousBalance: number;
+  /** @deprecated prefer formatPeriodComparisonDelta no frontend */
   incomePercentChange: number;
   expensePercentChange: number;
   balancePercentChange: number;

@@ -91,22 +91,46 @@
 
         @if (comparison(); as cmp) {
           <ul class="compare-deltas">
+            @let incomeDelta = formatPeriodComparisonDelta(
+              cmp.current.incomeTotal,
+              cmp.compare.incomeTotal,
+              { higherIsBetter: true }
+            );
+            @let expenseDelta = formatPeriodComparisonDelta(
+              cmp.current.expenseTotal,
+              cmp.compare.expenseTotal,
+              { higherIsBetter: false }
+            );
+            @let balanceDelta = formatPeriodComparisonDelta(
+              cmp.current.balance,
+              cmp.compare.balance,
+              { higherIsBetter: true }
+            );
             <li>
               <span>Receitas</span>
-              <strong [class.positive]="cmp.current.incomeTotal >= cmp.compare.incomeTotal">
-                {{ formatPctChange(pctChange(cmp.current.incomeTotal, cmp.compare.incomeTotal)) }}
+              <strong
+                [class.positive]="incomeDelta.tone === 'positive'"
+                [class.negative]="incomeDelta.tone === 'negative'"
+              >
+                {{ incomeDelta.label }}
               </strong>
             </li>
             <li>
               <span>Despesas</span>
-              <strong [class.negative]="cmp.current.expenseTotal > cmp.compare.expenseTotal">
-                {{ formatPctChange(pctChange(cmp.current.expenseTotal, cmp.compare.expenseTotal)) }}
+              <strong
+                [class.positive]="expenseDelta.tone === 'positive'"
+                [class.negative]="expenseDelta.tone === 'negative'"
+              >
+                {{ expenseDelta.label }}
               </strong>
             </li>
             <li>
               <span>Saldo</span>
-              <strong [class.positive]="cmp.current.balance >= cmp.compare.balance">
-                {{ formatPctChange(pctChange(cmp.current.balance, cmp.compare.balance)) }}
+              <strong
+                [class.positive]="balanceDelta.tone === 'positive'"
+                [class.negative]="balanceDelta.tone === 'negative'"
+              >
+                {{ balanceDelta.label }}
               </strong>
             </li>
           </ul>

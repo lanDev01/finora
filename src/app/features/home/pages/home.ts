@@ -5,6 +5,7 @@ import { type Income, IncomeService } from '@/core/services/income.service';
 import { UserService } from '@/core/services/user.service';
 import { SpendingGoalFlowService } from '@/features/spending-goal/spending-goal-flow.service';
 import { SpendingGoalProgress } from '@/features/home/components/spending-goal-progress/spending-goal-progress';
+import { formatPeriodComparisonDelta } from '@/features/dashboard/dashboard.utils';
 import { currentMonthLabel } from '@/shared/expense-goal';
 import { Header } from '@/layout/header/header';
 import { AsyncPipe } from '@angular/common';
@@ -88,33 +89,40 @@ export class Home implements OnInit {
     this.spendingGoalFlow.maybeShowMonthlyPrompt();
   }
 
-  private formatPct(n: number): string {
-    const sign = n >= 0 ? '+' : '';
-    return `${sign}${n.toFixed(1)}%`;
-  }
-
   private dashboardToCards(d: DashboardSummary): SummaryCardData[] {
     const balanceType: SummaryCardData['type'] = d.balance >= 0 ? 'positive' : 'negative';
+    const incomeDelta = formatPeriodComparisonDelta(d.incomeTotal, d.previousIncomeTotal ?? 0, {
+      higherIsBetter: true,
+    });
+    const expenseDelta = formatPeriodComparisonDelta(
+      d.expenseTotal,
+      d.previousExpenseTotal ?? 0,
+      { higherIsBetter: false },
+    );
+    const balanceDelta = formatPeriodComparisonDelta(d.balance, d.previousBalance ?? 0, {
+      higherIsBetter: true,
+    });
+
     return [
       {
         title: 'Receitas',
         value: this.brl.format(d.incomeTotal),
         icon: TrendingUp,
-        change: this.formatPct(d.incomePercentChange),
+        change: incomeDelta.label,
         type: 'positive',
       },
       {
         title: 'Despesas',
         value: this.brl.format(d.expenseTotal),
         icon: TrendingDown,
-        change: this.formatPct(d.expensePercentChange),
+        change: expenseDelta.label,
         type: 'negative',
       },
       {
         title: 'Saldo',
         value: this.brl.format(d.balance),
         icon: Wallet,
-        change: this.formatPct(d.balancePercentChange),
+        change: balanceDelta.label,
         type: balanceType,
         highlight: true,
       },

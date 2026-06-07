@@ -8,17 +8,17 @@ import {
 import {
   CompareMode,
   currentUtcMonthYear,
-  formatBrl,
+  formatPeriodComparisonDelta,
   formatMonthKeyLabel,
-  formatPctChange,
+  formatBrl,
   monthInputFromParts,
   partsFromMonthInput,
-  pctChange,
   previousMonth,
 } from '@/features/dashboard/dashboard.utils';
 import { ChartEmptyState } from '@/features/dashboard/components/chart-empty-state/chart-empty-state';
 import {
   CHART_SERIES_COLORS,
+  COMPARISON_BAR_COLORS,
   resolveChartTheme,
   type ChartThemeColors,
 } from '@/features/dashboard/chart-theme';
@@ -65,27 +65,38 @@ export class DashboardPage implements OnInit {
   readonly cards = computed(() => {
     const d = this.dashboard();
     if (!d) return this.placeholderCards();
+
+    const incomeDelta = formatPeriodComparisonDelta(d.incomeTotal, d.previousIncomeTotal, {
+      higherIsBetter: true,
+    });
+    const expenseDelta = formatPeriodComparisonDelta(d.expenseTotal, d.previousExpenseTotal, {
+      higherIsBetter: false,
+    });
+    const balanceDelta = formatPeriodComparisonDelta(d.balance, d.previousBalance, {
+      higherIsBetter: true,
+    });
     const balanceType: SummaryCardData['type'] = d.balance >= 0 ? 'positive' : 'negative';
+
     return [
       {
         title: 'Receitas',
         value: formatBrl(d.incomeTotal),
         icon: TrendingUp,
-        change: formatPctChange(d.incomePercentChange),
+        change: incomeDelta.label,
         type: 'positive' as const,
       },
       {
         title: 'Despesas',
         value: formatBrl(d.expenseTotal),
         icon: TrendingDown,
-        change: formatPctChange(d.expensePercentChange),
+        change: expenseDelta.label,
         type: 'negative' as const,
       },
       {
         title: 'Saldo',
         value: formatBrl(d.balance),
         icon: Wallet,
-        change: formatPctChange(d.balancePercentChange),
+        change: balanceDelta.label,
         type: balanceType,
         highlight: true,
       },
@@ -168,13 +179,15 @@ export class DashboardPage implements OnInit {
           {
             label: currentLabel,
             data: [data.current.incomeTotal, data.current.expenseTotal, data.current.balance],
-            backgroundColor: CHART_SERIES_COLORS.balance,
+            backgroundColor: [...COMPARISON_BAR_COLORS.current],
             borderRadius: 6,
           },
           {
             label: compareLabel,
             data: [data.compare.incomeTotal, data.compare.expenseTotal, data.compare.balance],
-            backgroundColor: theme.compareBar,
+            backgroundColor: [...COMPARISON_BAR_COLORS.compare],
+            borderColor: [...COMPARISON_BAR_COLORS.compareBorder],
+            borderWidth: 2,
             borderRadius: 6,
           },
         ],
@@ -383,7 +396,6 @@ export class DashboardPage implements OnInit {
   }
 
   protected formatBrl = formatBrl;
-  protected formatPctChange = formatPctChange;
-  protected pctChange = pctChange;
+  protected formatPeriodComparisonDelta = formatPeriodComparisonDelta;
   protected readonly arrowLeftIcon = ArrowLeft;
 }

@@ -43,6 +43,48 @@ export function formatPctChange(n: number): string {
   return `${sign}${n.toFixed(1)}%`;
 }
 
+export type ComparisonDeltaTone = 'positive' | 'negative' | 'neutral';
+
+export interface ComparisonDelta {
+  label: string;
+  tone: ComparisonDeltaTone;
+}
+
+/** Variação vs período anterior — usa % quando há base, senão diferença absoluta. */
+export function formatPeriodComparisonDelta(
+  current: number,
+  previous: number,
+  options?: { higherIsBetter?: boolean },
+): ComparisonDelta {
+  const higherIsBetter = options?.higherIsBetter ?? true;
+  const diff = current - previous;
+
+  if (previous === 0 && current === 0) {
+    return { label: '—', tone: 'neutral' };
+  }
+
+  if (previous === 0) {
+    const label = diff > 0 ? `+${formatBrl(diff)}` : formatBrl(diff);
+    if (diff === 0) return { label: '—', tone: 'neutral' };
+    const improved = (diff > 0) === higherIsBetter;
+    return { label, tone: improved ? 'positive' : 'negative' };
+  }
+
+  if (current === 0 && previous > 0) {
+    return { label: '-100%', tone: higherIsBetter ? 'negative' : 'positive' };
+  }
+
+  const pct = Math.round((diff / previous) * 1000) / 10;
+  if (pct === 0) return { label: '0%', tone: 'neutral' };
+
+  const improved = diff > 0 === higherIsBetter;
+  return {
+    label: formatPctChange(pct),
+    tone: improved ? 'positive' : 'negative',
+  };
+}
+
+/** @deprecated use formatPeriodComparisonDelta */
 export function pctChange(current: number, previous: number): number {
   if (previous <= 0) return 0;
   return Math.round(((current - previous) / previous) * 1000) / 10;
